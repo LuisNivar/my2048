@@ -1,0 +1,8 @@
+{
+    "recommendations": [
+        // Prettier
+        "esbenp.prettier-vscode",
+        // React Snippets
+        "dsznajder.es7-react-js-snippets"
+    ]
+}
