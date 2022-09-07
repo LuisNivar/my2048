@@ -1,0 +1,17 @@
+.Tile {
+    display: grid;
+    border-radius: 50%;
+    width: auto;
+    height: 100%;
+    place-items: center;
+}
+
+.Tile p {
+    text-align: center;
+    color: var(--primary-light);
+    font-weight: bold;
+    /* Font stroke */
+    text-shadow: -1px 1px 0 #000,
+				  1px 1px 0 #000,
+				 1px -1px 0 #000;
+}
