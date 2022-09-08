@@ -6,9 +6,6 @@
 ::before,
 ::after {
   box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-  
 }
 
 /* Default styles*/
@@ -20,4 +17,18 @@
 
   font-family: "Blinker", sans-serif;
   color: var(--primary);
+}
+
+/** Resets not covered by normalize*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+}
+
+body {
+  margin: 0;
 }
