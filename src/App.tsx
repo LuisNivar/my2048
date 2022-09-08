@@ -1,11 +1,25 @@
 import "./App.css";
+import Grid from "./components/Grid";
+import GridCell from "./components/GridCell";
 import Tile from "./components/Tile";
 
 function App() {
+  const rows = 4;
+  const columns = 4;
+
+  const testValues = [...Array(rows * columns).keys()];
+
   return (
     <div className="app">
       {/* TODO Add game components */}
-      <h1>Game placeholder</h1>    
+      <Grid rows={rows} columns={columns}>
+        {testValues.map((val) => (
+          <GridCell>
+            <Tile value={Math.pow(2, val)} />
+          </GridCell>
+        ))}
+      </Grid>
+      <h1>Game placeholder</h1>
     </div>
   );
 }

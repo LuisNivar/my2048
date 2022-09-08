@@ -1,0 +1,7 @@
+.gridCell {
+  width: 4rem;
+  height: 4rem;
+  background: transparent;
+  border: 3px solid var(--primary);
+  border-radius: 50%;
+}
