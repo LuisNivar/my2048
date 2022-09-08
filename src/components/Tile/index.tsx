@@ -1,7 +1,8 @@
 import "./index.css";
 
-const BASE_NUMBER = 2;
-
+/**
+ * The base is to represent the number in scientific notation if necessary
+ */
 type TileProps = {
   value: number;
 };
@@ -9,37 +10,40 @@ type TileProps = {
 /**
  * Return HSL string given a value
  */
-function getCSSColor(value : number) {
+function getCSSColor(value : number, base : number) {
     const MAX_HUE = 360;
+    const COLOR_IF_OVERFLOW = "#151718" 
+    
     // Max number is base ^ 11, example 2 ^ 11 = 2048
     // So we compute the initial HUE accordingly so that colors 
     // are distributed evenly. 
     const INITIAL_HUE = Math.floor(360 / 11);
-    const multiplier = Math.log(value) / Math.log(BASE_NUMBER); 
-    const hue =  multiplier * INITIAL_HUE;
+    const hue =  multiplier(value, base) * INITIAL_HUE;
 
     if (hue >= MAX_HUE) {
-        return "#151718";
+        return COLOR_IF_OVERFLOW ;
     }
 
   return `hsl(${hue}, 81%, 67%)`;
 }
 
-function GetNumer(value : number) {
+/**
+ * Represent numbers in scientific notation if greater than n digits
+ */
+function getNumer(value : number, base : number) {
     const numOfDigits = Math.floor(Math.log10(value)+ 1);
     const MAX_DIGITS = 6;
 
     if (numOfDigits <= MAX_DIGITS ) {
         return value.toString();
     }
-    const multiplier = Math.log(value) / Math.log(BASE_NUMBER);
-    return `${BASE_NUMBER}^${multiplier}` ;
+    return `${base}^${multiplier(value, base)}` ;
 }
 
 /**
  * Return font size
  */
-function GetFontSize(value : string){
+function getFontSize(value : string){
     // decrease font size by increasing number length
     const FONT_SIZE_BASE = 27;
     const numOfDigits = value.length;
@@ -48,13 +52,13 @@ function GetFontSize(value : string){
 
 function Tile(props : TileProps) {
     const style = {
-        background : getCSSColor(props.value),
-        "font-size" : GetFontSize(GetNumer(props.value))
+        background : getCSSColor(props.value, props.base),
+        "font-size" : getFontSize(getNumer(props.value, props.base))
     }
 
     return (
         <div className="Tile" style={style}>
-            <p>{GetNumer(props.value)}</p>
+            <p>{getNumer(props.value, props.base)}</p>
         </div>
     );
 }
