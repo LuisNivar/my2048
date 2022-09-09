@@ -3,14 +3,20 @@ import "./index.css";
 /**
  * The base is to represent the number in scientific notation if necessary
  */
+ const BASE = 2;
+
 type TileProps = {
-  value: number;
-};
+    value : number;
+}
+
+function multiplier (value : number){
+    return Math.floor(Math.log(value) / Math.log(BASE));
+}
 
 /**
  * Return HSL string given a value
  */
-function getCSSColor(value : number, base : number) {
+function getCSSColor(value : number) {
     const MAX_HUE = 360;
     const COLOR_IF_OVERFLOW = "#151718" 
     
@@ -18,7 +24,7 @@ function getCSSColor(value : number, base : number) {
     // So we compute the initial HUE accordingly so that colors 
     // are distributed evenly. 
     const INITIAL_HUE = Math.floor(360 / 11);
-    const hue =  multiplier(value, base) * INITIAL_HUE;
+    const hue =  multiplier(value) * INITIAL_HUE;
 
     if (hue >= MAX_HUE) {
         return COLOR_IF_OVERFLOW ;
@@ -30,14 +36,14 @@ function getCSSColor(value : number, base : number) {
 /**
  * Represent numbers in scientific notation if greater than n digits
  */
-function getNumer(value : number, base : number) {
+function getNumer(value : number) {
     const numOfDigits = Math.floor(Math.log10(value)+ 1);
     const MAX_DIGITS = 6;
 
     if (numOfDigits <= MAX_DIGITS ) {
         return value.toString();
     }
-    return `${base}^${multiplier(value, base)}` ;
+    return `${BASE}^${multiplier(value)}` ;
 }
 
 /**
@@ -52,13 +58,13 @@ function getFontSize(value : string){
 
 function Tile(props : TileProps) {
     const style = {
-        background : getCSSColor(props.value, props.base),
-        "font-size" : getFontSize(getNumer(props.value, props.base))
+        background : getCSSColor(props.value),
+        "font-size" : getFontSize(getNumer(props.value))
     }
 
     return (
         <div className="Tile" style={style}>
-            <p>{getNumer(props.value, props.base)}</p>
+            <p>{getNumer(props.value)}</p>
         </div>
     );
 }
@@ -66,7 +72,7 @@ function Tile(props : TileProps) {
 function Tile(props: TileProps) {
   const style = {
     background: getCSSColor(props.value),
-    fontSize: GetFontSize(props.value),
+    fontSize: getFontSize(props.value),
   };
 
   return (
