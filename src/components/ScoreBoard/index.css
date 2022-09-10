@@ -1,0 +1,19 @@
+.score-board {
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: space-between;
+  vertical-align: middle;
+}
+
+.score-board p {
+  color: var(--secondary-light);
+  font-size: 1.5em;
+  line-height: 0;
+  margin-left: 0.75rem;
+}
+
+.score-board p.title {
+  color: var(--primary);
+  font-weight: bold;
+  margin-left: 0;
+}
