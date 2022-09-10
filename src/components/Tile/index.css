@@ -7,10 +7,27 @@
   align-items: center;
 }
 
-.Tile p {
-  text-align: center;
-  color: var(--primary-light);
+.numberWrapper {
+  display: grid;
+  grid-template-areas: "cell";
+  place-items: center;
   font-weight: bold;
-  /* Font stroke */
-  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000;
+}
+
+/* Place Both the number and it's stroke on the same cell */
+.textStroke,
+.number {
+  grid-area: cell;
+}
+
+.textStroke {
+  color: rgba(0, 0, 0, 0.2);
+  filter: url(#stroke-text-svg-filter);
+  /* place the stroke below the number*/
+  z-index: 1;
+}
+
+.number {
+  color: var(--primary-light);
+  z-index: 2;
 }
