@@ -1,7 +1,6 @@
 import "./App.css";
 import Grid from "./components/Grid";
 import GridCell from "./components/GridCell";
-import Tile from "./components/Tile";
 
 function App() {
   const rows = 4;
@@ -14,9 +13,7 @@ function App() {
       {/* TODO Add game components */}
       <Grid rows={rows} columns={columns}>
         {testValues.map((val) => (
-          <GridCell>
-            <Tile value={Math.pow(2, val)} />
-          </GridCell>
+          <GridCell key={val} />
         ))}
       </Grid>
       <h1>Game placeholder</h1>
