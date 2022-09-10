@@ -6,8 +6,8 @@
 }
 
 .cell {
-  width: 4rem;
-  height: 4rem;
+  width: var(--tile-size);
+  height: var(--tile-size);
   background: transparent;
   border: 3px solid var(--primary);
   border-radius: 50%;
