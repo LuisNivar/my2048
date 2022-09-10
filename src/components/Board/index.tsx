@@ -4,7 +4,6 @@ import styles from "./index.module.css";
 type GridProps = {
   columns: number;
   rows: number;
-  children: React.ReactNode;
 };
 
 /**
@@ -17,17 +16,20 @@ interface GridStyle extends React.CSSProperties {
   "--rows": number;
 }
 
-function Grid({ children, columns, rows }: GridProps) {
+function Board({columns, rows }: GridProps) {
   const style: GridStyle = {
     "--columns": columns,
     "--rows": rows,
   };
+  const cells = [...Array(rows * columns).keys()];
 
   return (
     <div className={styles.grid} style={style}>
-      {children}
+      {cells.map((_, index) => (
+        <div key={index} className={styles.cell}/>
+      ))}
     </div>
   );
 }
 
-export default Grid;
+export default Board;
