@@ -1,8 +1,15 @@
 import "./index.css";
 
+const BASE = 2;
+const DARK_COLOR = "#151718";
+
 type TileProps = {
   value: number;
 };
+
+function exponent(value: number) {
+  return Math.floor(Math.log(value) / Math.log(BASE));
+}
 
 /**
  * Return HSL string given a value
@@ -13,39 +20,39 @@ function getCSSColor(value: number) {
   // So we compute the initial HUE accordingly so that colors
   // are distributed evenly.
   const INITIAL_HUE = Math.floor(360 / 11);
-  const BASE_NUMBER = 2;
-
-  const multiplier = Math.log(value) / Math.log(BASE_NUMBER);
+  const multiplier = exponent(value);
   const hue = multiplier * INITIAL_HUE;
 
   if (hue >= MAX_HUE) {
-    return "#252525";
+    return DARK_COLOR;
   }
 
   return `hsl(${hue}, 81%, 67%)`;
 }
-/**
- * Return font size
- */
-function GetFontSize(value: number) {
-  // decrease font size by increasing number length
-  const FONT_SIZE_BASE = 26;
-  const length = ~~(Math.log(value) / Math.LN10 + 1);
-  return FONT_SIZE_BASE - length;
-}
 
 function Tile(props: TileProps) {
+  const MAX_DIGITS = 6;
+  const numOfDigits = Math.floor(Math.log10(props.value) + 1);
+
+  const isSmallNumber = numOfDigits <= MAX_DIGITS;
+
   const style = {
     background: getCSSColor(props.value),
-    fontSize: GetFontSize(props.value),
+    fontSize: "32px",
   };
 
   return (
     <div className="Tile" style={style}>
-      <div className="numberWrapper">
-        <p className="textStroke">{props.value}</p>
-        <p className="number">{props.value}</p>
-      </div>
+      {isSmallNumber ? (
+        // Display the number as is
+        <p>{props.value}</p>
+      ) : (
+        // Show the number in scientific notation
+        <p>
+          {BASE}
+          <sup>{exponent(props.value)}</sup>
+        </p>
+      )}
     </div>
   );
 }
