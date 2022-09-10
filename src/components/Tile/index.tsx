@@ -1,12 +1,18 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./index.css";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
 const DARK_COLOR = "#151718";
+const TILE_FONT_SIZE = 32;
+const TILE_PADDING = 16;
 
 type TileProps = {
   value: number;
+};
+
+type StrokeProps = {
+  children: React.ReactNode;
 };
 
 function exponent(value: number) {
@@ -32,38 +38,61 @@ function getCSSColor(value: number) {
   return `hsl(${hue}, 81%, 67%)`;
 }
 
-function Stroke(props: { children: React.ReactNode }) {
-  return (
-    <div className="textStrokeWrapper">
+const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
+  (props, ref) => (
+    <div className="textStrokeWrapper" ref={ref}>
       <p className="textStroke">{props.children}</p>
       <p className="text">{props.children}</p>
     </div>
-  );
-}
+  )
+);
 
 function Tile(props: TileProps) {
-  const numOfDigits = Math.floor(Math.log10(props.value) + 1);
+  const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
+  const tileRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
 
+  const numOfDigits = Math.floor(Math.log10(props.value) + 1);
   const isSmallNumber = numOfDigits <= MAX_DIGITS;
 
   const style = {
     background: getCSSColor(props.value),
-    fontSize: "32px",
+    fontSize: fontSize + "px",
   };
 
+  // Reset font size when value changes
+  useEffect(() => {
+    setFontSize(TILE_FONT_SIZE);
+  }, [props.value]);
+
+  // Dynamically resize the font size to fit inside the tile's width
+  useEffect(() => {
+    const tileDiv = tileRef.current;
+    const textDiv = textRef.current;
+
+    if (!tileDiv || !textDiv) {
+      return;
+    }
+
+    const tileWidth = tileDiv.clientWidth - TILE_PADDING;
+    const textWidth = textDiv.clientWidth;
+
+    if (tileWidth < textWidth) {
+      setFontSize(fontSize - 1);
+    }
+  }, [fontSize]);
+
   return (
-    <div className="tile" style={style}>
+    <div className="tile" style={style} ref={tileRef}>
       {isSmallNumber ? (
         // Display the number as is
-        <Stroke>{props.value}</Stroke>
+        <Stroke ref={textRef}>{props.value}</Stroke>
       ) : (
         // Show the number in scientific notation
-        <p>
-          <Stroke>
-            {BASE}
-            <sup>{exponent(props.value)}</sup>
-          </Stroke>
-        </p>
+        <Stroke ref={textRef}>
+          {BASE}
+          <sup>{exponent(props.value)}</sup>
+        </Stroke>
       )}
     </div>
   );
