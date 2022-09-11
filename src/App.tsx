@@ -1,8 +1,6 @@
 import "./App.css";
-import { ReactComponent as MenuIcon } from "./assets/menu.svg";
 import Board from "./components/Board";
-import Container from "./components/Container";
-import IconButton from "./components/IconButton";
+import MenuSection from "./components/MenuSection";
 import ScoreBoard from "./components/ScoreBoard";
 
 function App() {
@@ -14,15 +12,15 @@ function App() {
   return (
     <div className="app">
       {/* TODO Add game components */}
-      <h1>Game placeholder</h1>
-
-      <Container>
-        <Board rows={rows} columns={columns} />
-      </Container>
-
-      <ScoreBoard score={score} bestScore={bestScore} />
-
-      <IconButton Icon={MenuIcon} />
+      <div className="game">
+        <MenuSection className="menu" />
+        <ScoreBoard
+          className="scoreboard"
+          score={score}
+          bestScore={bestScore}
+        />
+        <Board className="board" rows={rows} columns={columns} />
+      </div>
     </div>
   );
 }
