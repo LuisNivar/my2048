@@ -1,9 +1,11 @@
 import React from "react";
 import styles from "./index.module.css";
+import Container from "../Container";
 
 type GridProps = {
   columns: number;
   rows: number;
+  className?: string;
 };
 
 /**
@@ -16,7 +18,7 @@ interface GridStyle extends React.CSSProperties {
   "--rows": number;
 }
 
-function Board({columns, rows }: GridProps) {
+function Board({ columns, rows, className }: GridProps) {
   const style: GridStyle = {
     "--columns": columns,
     "--rows": rows,
@@ -24,11 +26,13 @@ function Board({columns, rows }: GridProps) {
   const cells = [...Array(rows * columns).keys()];
 
   return (
-    <div className={styles.grid} style={style}>
-      {cells.map((_, index) => (
-        <div key={index} className={styles.cell}/>
-      ))}
-    </div>
+    <Container className={className}>
+      <div className={styles.grid} style={style}>
+        {cells.map((_, index) => (
+          <div key={index} className={styles.cell} />
+        ))}
+      </div>
+    </Container>
   );
 }
 

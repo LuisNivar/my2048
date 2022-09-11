@@ -1,11 +1,13 @@
-import "./index.css";
+import styles from "./index.module.css";
 
-type LayoutProps = {
-  children: React.ReactNode;
-};
+type LayoutProps = React.ComponentPropsWithoutRef<"div">;
 
-function Container(props: LayoutProps) {
-  return <div className="round-square">{props.children}</div>;
+function Container({ className, children, ...rest }: LayoutProps) {
+  return (
+    <div className={`${styles.roundSquare} ${className}`} {...rest}>
+      {children}
+    </div>
+  );
 }
 
 export default Container;
