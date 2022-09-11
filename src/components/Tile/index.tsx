@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import "./index.css";
 
 const BASE = 2;
@@ -61,26 +61,25 @@ function Tile(props: TileProps) {
   };
 
   // Reset font size when value changes
-  useEffect(() => {
+  useLayoutEffect(() => {
     setFontSize(TILE_FONT_SIZE);
   }, [props.value]);
 
   // Dynamically resize the font size to fit inside the tile's width
-  useEffect(() => {
+  useLayoutEffect(() => {
     const tileDiv = tileRef.current;
     const textDiv = textRef.current;
 
     if (!tileDiv || !textDiv) {
       return;
     }
-
     const tileWidth = tileDiv.clientWidth - TILE_PADDING;
     const textWidth = textDiv.clientWidth;
 
     if (tileWidth < textWidth) {
       setFontSize(fontSize - 1);
     }
-  }, [fontSize]);
+  }, [props.value, fontSize]);
 
   return (
     <div className="tile" style={style} ref={tileRef}>

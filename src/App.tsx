@@ -13,7 +13,7 @@ function App() {
       {/* TODO Add game components */}
       <Board rows={rows} columns={columns} />
       <IconButton Icon={MenuIcon} />
-      <Tile value={123478122} />
+      <Tile value={2048} />
       <h1>Game placeholder</h1>
     </div>
   );
