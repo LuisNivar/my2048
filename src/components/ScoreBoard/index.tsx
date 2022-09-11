@@ -1,12 +1,14 @@
 import React from "react";
 import Container from "../Container";
-import "./index.css";
+import styles from "./index.module.css";
 
 type ScoreType = {
+  className: string;
   score: number;
   bestScore: number;
 };
 
+const padZero = (num: number, length: number) => String(num).padStart();
 function ScoreBoard(props: ScoreType) {
   /**
    * Add leading Zeros
@@ -14,15 +16,17 @@ function ScoreBoard(props: ScoreType) {
    */
   const score = ("0000000" + props.score).slice(-7);
   const bestScore = ("0000000" + props.bestScore).slice(-7);
-
+  console.log(styles);
   return (
-    <div className="score-board">
-      <Container>
-        <p className="title">Score:</p> <p>{score}</p>
+    <div className={`${styles.scoreBoard} ${props.className}`}>
+      <Container className={styles.marginBottom}>
+        <p className={styles.title}>Score:</p>
+        <p className={styles.score}>{score}</p>
       </Container>
 
       <Container>
-        <p className="title">Best:</p> <p>{bestScore} </p>
+        <p className={styles.title}>Best:</p>
+        <p className={styles.score}>{bestScore} </p>
       </Container>
     </div>
   );
