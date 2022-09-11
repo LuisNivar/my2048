@@ -1,0 +1,20 @@
+.container {
+  display: grid;
+  width: fit-content;
+  grid-template-areas:
+    "title title"
+    "menu reload";
+}
+
+.title {
+  grid-area: title;
+}
+
+.menu {
+  grid-area: menu;
+  margin-right: 0.5rem;
+}
+
+.reload {
+  grid-area: reload;
+}
