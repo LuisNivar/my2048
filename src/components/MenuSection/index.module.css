@@ -1,6 +1,5 @@
 .container {
   display: grid;
-  width: fit-content;
   grid-template-areas:
     "title title"
     "menu reload";
