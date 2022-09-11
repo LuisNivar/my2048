@@ -5,14 +5,13 @@ type IconButtonProps = React.ComponentPropsWithoutRef<"button"> & {
 };
 
 function IconButton(props: IconButtonProps) {
-  const { Icon, ...rest } = props;
+  const { Icon, className, ...rest } = props;
 
   return (
-    <button {...rest} className={styles.button}>
+    <button {...rest} className={`${styles.button} ${className}`}>
       {<Icon className={styles.icon} />}
     </button>
   );
 }
 
 export default IconButton;
-
