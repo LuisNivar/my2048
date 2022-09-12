@@ -3,7 +3,7 @@ import Container from "../Container";
 import styles from "./index.module.css";
 
 type ScoreType = {
-  className: string;
+  className?: string;
   score: number;
   bestScore: number;
 };
