@@ -1,0 +1,7 @@
+.roundSquare {
+  /*width: fit-content;*/
+  display: inline-flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
+  padding: 1rem;
+}

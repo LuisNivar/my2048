@@ -1,20 +1,26 @@
 import "./App.css";
-import { ReactComponent as MenuIcon } from "./assets/menu.svg";
 import Board from "./components/Board";
-import IconButton from "./components/IconButton";
-import Tile from "./components/Tile";
+import MenuSection from "./components/MenuSection";
+import ScoreBoard from "./components/ScoreBoard";
 
 function App() {
   const rows = 4;
   const columns = 4;
+  let score = 15;
+  let bestScore = 352;
 
   return (
     <div className="app">
       {/* TODO Add game components */}
-      <Board rows={rows} columns={columns} />
-      <IconButton Icon={MenuIcon} />
-      <Tile value={2048} />
-      <h1>Game placeholder</h1>
+      <div className="game">
+        <MenuSection className="menu" />
+        <ScoreBoard
+          className="scoreboard"
+          score={score}
+          bestScore={bestScore}
+        />
+        <Board className="board" rows={rows} columns={columns} />
+      </div>
     </div>
   );
 }
