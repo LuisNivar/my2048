@@ -2,6 +2,7 @@ import "./App.css";
 import Board from "./components/Board";
 import MenuSection from "./components/MenuSection";
 import ScoreBoard from "./components/ScoreBoard";
+import Instruction from "./components/Instruction";
 
 function App() {
   const rows = 4;
@@ -20,6 +21,7 @@ function App() {
           bestScore={bestScore}
         />
         <Board className="board" rows={rows} columns={columns} />
+        <Instruction className="instruction" />
       </div>
     </div>
   );
