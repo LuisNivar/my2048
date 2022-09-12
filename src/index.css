@@ -18,6 +18,8 @@
 
   font-family: "Blinker", sans-serif;
   color: var(--primary);
+
+  --tile-size: 4rem;
 }
 
 /** Resets not covered by normalize*/

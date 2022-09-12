@@ -1,13 +1,13 @@
-.Tile {
+.tile {
   display: flex;
   border-radius: 50%;
-  width: auto;
-  height: 100%;
+  width: var(--tile-size);
+  height: var(--tile-size);
   justify-content: center;
   align-items: center;
 }
 
-.numberWrapper {
+.textStrokeWrapper {
   display: grid;
   grid-template-areas: "cell";
   place-items: center;
@@ -16,7 +16,7 @@
 
 /* Place Both the number and it's stroke on the same cell */
 .textStroke,
-.number {
+.text {
   grid-area: cell;
 }
 
@@ -27,7 +27,7 @@
   z-index: 1;
 }
 
-.number {
+.text {
   color: var(--primary-light);
   z-index: 2;
 }
