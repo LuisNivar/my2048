@@ -3,6 +3,7 @@ import Board from "./components/Board";
 import MenuSection from "./components/MenuSection";
 import ScoreBoard from "./components/ScoreBoard";
 import Instruction from "./components/Instruction";
+import Game from "./components/Game";
 
 function App() {
   const rows = 4;
@@ -12,15 +13,14 @@ function App() {
 
   return (
     <div className="app">
-      {/* TODO Add game components */}
-      <div className="game">
-        <MenuSection className="menu" />
-        <ScoreBoard
-          className="scoreboard"
+      <div className="layout">
+        <Game
+          className="game"
           score={score}
           bestScore={bestScore}
+          row={rows}
+          col={columns}
         />
-        <Board className="board" rows={rows} columns={columns} />
         <Instruction className="instruction" />
       </div>
     </div>
