@@ -1,10 +1,12 @@
 .tile {
   display: flex;
+  position: absolute;
   border-radius: 50%;
   width: var(--tile-size);
   height: var(--tile-size);
   justify-content: center;
   align-items: center;
+  transform: translate(var(--x), var(--y));
 }
 
 .textStrokeWrapper {

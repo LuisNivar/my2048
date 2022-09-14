@@ -9,6 +9,8 @@ const TILE_PADDING = 16;
 
 type TileProps = {
   value: number;
+  x: number;
+  y: number;
 };
 
 type StrokeProps = {
@@ -49,6 +51,7 @@ const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
 
 function Tile(props: TileProps) {
   const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
+
   const tileRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
@@ -58,6 +61,8 @@ function Tile(props: TileProps) {
   const style = {
     background: getCSSColor(props.value),
     fontSize: fontSize + "px",
+    "--x": props.x + "px",
+    "--y": props.y + "px",
   };
 
   // Reset font size when value changes
