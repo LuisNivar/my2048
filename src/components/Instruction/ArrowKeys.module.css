@@ -17,13 +17,16 @@
 }
 
 .right {
+  transform: rotate(90deg);
   grid-area: right;
 }
 
 .down {
+  transform: rotate(180deg);
   grid-area: down;
 }
 
 .left {
+  transform: rotate(-90deg);
   grid-area: left;
 }
