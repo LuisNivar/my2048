@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
-import "./index.css";
+import styles from "./index.module.css";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
@@ -40,9 +40,9 @@ function getCSSColor(value: number) {
 
 const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
   (props, ref) => (
-    <div className="textStrokeWrapper" ref={ref}>
-      <p className="textStroke">{props.children}</p>
-      <p className="text">{props.children}</p>
+    <div className={styles.textStrokeWrapper} ref={ref}>
+      <p className={styles.textStroke}>{props.children}</p>
+      <p className={styles.text}>{props.children}</p>
     </div>
   )
 );
@@ -82,7 +82,7 @@ function Tile(props: TileProps) {
   }, [props.value, fontSize]);
 
   return (
-    <div className="tile" style={style} ref={tileRef}>
+    <div className={styles.tile} style={style} ref={tileRef}>
       {isSmallNumber ? (
         // Display the number as is
         <Stroke ref={textRef}>{props.value}</Stroke>
