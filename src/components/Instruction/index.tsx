@@ -1,11 +1,10 @@
-import React, { useState } from "react";
-import styles from "./index.module.css";
+import { ReactComponent as SpeakerMute } from "../../assets/speaker-mute.svg";
+import { ReactComponent as Speaker } from "../../assets/speaker.svg";
+import useToggle from "../../hooks/useToggle";
 import Container from "../Container";
 import IconButton from "../IconButton";
-import { ReactComponent as Speaker } from "../../assets/speaker.svg";
-import { ReactComponent as SpeakerMute } from "../../assets/speaker-mute.svg";
 import ArrowKeys from "./ArrowKeys";
-import useToggle from "../../hooks/useToggle";
+import styles from "./index.module.css";
 
 type instructionProps = {
   className?: string;

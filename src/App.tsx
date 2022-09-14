@@ -1,9 +1,6 @@
 import "./App.css";
-import Board from "./components/Board";
-import MenuSection from "./components/MenuSection";
-import ScoreBoard from "./components/ScoreBoard";
-import Instruction from "./components/Instruction";
 import Game from "./components/Game";
+import Instruction from "./components/Instruction";
 
 function App() {
   const rows = 4;

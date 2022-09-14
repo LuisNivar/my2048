@@ -1,8 +1,8 @@
-import styles from "./index.module.css";
+import classNames from "classnames";
+import Board, { BoardProps } from "../Board";
 import MenuSection from "../MenuSection";
 import ScoreBoard from "../ScoreBoard";
-import Board from "../Board";
-import classNames from "classnames";
+import styles from "./index.module.css";
 
 type gameProps = {
   className?: string;
@@ -14,6 +14,11 @@ type gameProps = {
 
 function Game(props: gameProps) {
   const gameClass = classNames(props.className, styles.game);
+  const getCells: BoardProps["getCellsLocation"] = (cells) => {
+    // Do anything you need with the cells position here
+    // We can also store it as a state variable to use it somewhere else
+    console.log(cells);
+  };
 
   return (
     <div className={gameClass}>
@@ -23,7 +28,12 @@ function Game(props: gameProps) {
         score={props.score}
         bestScore={props.bestScore}
       />
-      <Board className={styles.board} rows={props.row} columns={props.col} />
+      <Board
+        className={styles.board}
+        rows={props.row}
+        columns={props.col}
+        getCellsLocation={getCells}
+      />
     </div>
   );
 }
