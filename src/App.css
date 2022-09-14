@@ -3,27 +3,18 @@
   min-height: 100vh;
 }
 
-.game {
+.layout {
   display: grid;
   width: fit-content;
   grid-template-areas:
-    "menu score"
-    "board board"
-    "instruction instruction";
+    "game"
+    "instruction";
   gap: 0.5rem;
   padding: 1rem;
 }
 
-.menu {
-  grid-area: menu;
-}
-
-.scoreboard {
-  grid-area: score;
-}
-
-.board {
-  grid-area: board;
+.game {
+  grid-area: game;
 }
 
 .instruction {
