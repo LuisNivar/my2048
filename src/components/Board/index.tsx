@@ -1,3 +1,4 @@
+import classNames from "classnames";
 import React, { useRef } from "react";
 import Container from "../Container";
 import styles from "./index.module.css";
@@ -28,13 +29,14 @@ function Board(props: BoardProps) {
     "--rows": rows,
   };
 
+  console.log("Render");
   // Get bounding box and store the top-left coordinates
   const addLocation = (element: HTMLDivElement | null) => {
     const rect = element?.getBoundingClientRect();
     if (rect) {
       const position: Point = {
-        x: rect.x,
-        y: rect.y,
+        x: Math.round(rect.x),
+        y: Math.round(rect.y),
       };
       cellsPosition.current.push(position);
     }
@@ -47,9 +49,10 @@ function Board(props: BoardProps) {
     // see https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
     cells.push(<div key={i} className={styles.cell} ref={addLocation} />);
   }
+  const containerClass = classNames(className, styles.alignTop);
 
   return (
-    <Container className={className}>
+    <Container className={containerClass}>
       <div className={styles.grid} style={style}>
         {cells}
       </div>

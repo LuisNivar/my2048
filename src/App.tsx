@@ -15,8 +15,8 @@ function App() {
           className="game"
           score={score}
           bestScore={bestScore}
-          row={rows}
-          col={columns}
+          rows={rows}
+          cols={columns}
         />
         <Instruction className="instruction" />
       </div>
