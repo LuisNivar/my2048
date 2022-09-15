@@ -6,7 +6,6 @@ export type BoardProps = {
   columns: number;
   rows: number;
   className?: string;
-  getCellsLocation?: (cells: Point[]) => void;
 };
 
 /**
@@ -20,7 +19,7 @@ interface BoardStyle extends React.CSSProperties {
 }
 
 function Board(props: BoardProps) {
-  const { columns, rows, className, getCellsLocation } = props;
+  const { columns, rows, className } = props;
   // Using useRef instead of useState to prevent react from re-rendering while the array is populating
   const cellsPosition = useRef<Array<Point>>([]);
 
@@ -40,11 +39,6 @@ function Board(props: BoardProps) {
       cellsPosition.current.push(position);
     }
   };
-
-  if (getCellsLocation) {
-    // Pass cells coordinates to parent component
-    getCellsLocation(cellsPosition.current);
-  }
 
   // Building Grid
   const cells: React.ReactNode[] = [];
