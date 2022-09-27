@@ -7,7 +7,7 @@ const DARK_COLOR = "#151718";
 const TILE_FONT_SIZE = 32;
 const TILE_PADDING = 16;
 
-type TileProps = {
+export type TileProps = {
   value: number;
   x: number;
   y: number;

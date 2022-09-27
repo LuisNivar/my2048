@@ -7,6 +7,7 @@
   justify-content: center;
   align-items: center;
   transform: translate(var(--x), var(--y));
+  transition: transform 330ms ease-in-out 100ms;
 }
 
 .textStrokeWrapper {
