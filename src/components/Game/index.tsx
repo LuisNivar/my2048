@@ -2,7 +2,6 @@ import classNames from "classnames";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
 import ScoreBoard from "../ScoreBoard";
-import Tile from "../Tile";
 import styles from "./index.module.css";
 
 type gameProps = {
@@ -14,8 +13,6 @@ type gameProps = {
 };
 
 function Game(props: gameProps) {
-  const Tiles: React.ReactNode[] = [];
-
   const gameClass = classNames(props.className, styles.game);
 
   return (
