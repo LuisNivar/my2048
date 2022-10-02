@@ -31,7 +31,7 @@ interface BoardStyle extends React.CSSProperties {
  * 4 5 6
  * 7 8 9
  */
-function Index(i: number, j: number, columns: number) {
+function index(i: number, j: number, columns: number) {
   return i * columns + j;
 }
 
@@ -51,14 +51,83 @@ function moveY(
 
   while (i != endRow) {
     for (let j = 0; j < columns; j++) {
-      const cur = Index(i, j, columns);
-      const incoming = Index(i + direction, j, columns);
+      const cur = index(i, j, columns);
+      const incoming = index(i + direction, j, columns);
       tmp[incoming] = tiles[cur];
     }
     i += direction;
   }
 
   return tmp;
+}
+
+function makeTiles(rows: number, cols: number) {
+  const t = Array<number[]>(rows);
+  for (let i = 0; i < t.length; i++) {
+    t[i] = Array<number>(cols).fill(0);
+  }
+  return t;
+}
+
+function cloneTiles(tiles: number[][]) {
+  const newTiles = [...tiles];
+  for (let i = 0; i < newTiles.length; i++) {
+    newTiles[i] = [...tiles[i]];
+  }
+  return newTiles;
+}
+
+function moveX(tiles: number[][], dir: DirectionX) {
+  const rows = tiles.length;
+  const cols = tiles[0].length;
+
+  let startRow = 0;
+  let endRow = rows;
+  let startCol = 0;
+  let endCol = cols;
+
+  const isInbounds = (col: number) => col >= 0 && col < cols;
+
+  while (startRow < endRow) {
+    for (let col = cols - 1; col >= 0; col--) {
+      const currentRow = tiles[startRow];
+      const tile = currentRow[col];
+
+      if (!tile) {
+        continue;
+      }
+
+      // // Search next available position
+      // let previous = col;
+      // let current = previous;
+      // do {
+      //   previous = current;
+      //   current++;
+      //   // while there are no obstables
+      // } while (current < cols && !currentRow[current]);
+
+      let previous = col;
+      let next = previous + 1;
+      // Move next until an obstacle is found
+      while (isInbounds(next) && !currentRow[next]) {
+        previous = next;
+        next++;
+      }
+
+      if (isInbounds(next) && currentRow[next] === tile) {
+        // Merge tiles
+        currentRow[col] = 0;
+        currentRow[next] *= 2;
+      } else {
+        // Move tile to its new position
+        currentRow[col] = 0;
+        currentRow[previous] = tile;
+      }
+    }
+
+    startRow++;
+  }
+  return cloneTiles(tiles);
 }
 
 function Board(props: BoardProps) {
@@ -151,4 +220,4 @@ function Board(props: BoardProps) {
 }
 
 export default Board;
-export { moveY };
+export { moveY, moveX };
