@@ -13,8 +13,12 @@ export type BoardProps = {
 
 const BASE = 2;
 
-type DirectionY = "up" | "down";
-type DirectionX = "left" | "right";
+const Directions = {
+  right: [1, 0],
+  left: [-1, 0],
+  down: [0, 1],
+  up: [0, -1],
+};
 
 /**
  * Extending CSS properties to add custom ones.
@@ -24,41 +28,6 @@ type DirectionX = "left" | "right";
 interface BoardStyle extends React.CSSProperties {
   "--columns": number;
   "--rows": number;
-}
-
-/**
- * 1 2 3
- * 4 5 6
- * 7 8 9
- */
-function index(i: number, j: number, columns: number) {
-  return i * columns + j;
-}
-
-function moveY(
-  tiles: number[],
-  rows: number,
-  columns: number,
-  dir: DirectionY
-) {
-  let tmp = [...tiles];
-
-  const startRow = dir === "up" ? rows - 1 : 0;
-  const endRow = dir === "up" ? 0 : rows - 1;
-  const direction = dir === "up" ? -1 : 1;
-
-  let i = startRow;
-
-  while (i != endRow) {
-    for (let j = 0; j < columns; j++) {
-      const cur = index(i, j, columns);
-      const incoming = index(i + direction, j, columns);
-      tmp[incoming] = tiles[cur];
-    }
-    i += direction;
-  }
-
-  return tmp;
 }
 
 function makeTiles(rows: number, cols: number) {
@@ -77,56 +46,59 @@ function cloneTiles(tiles: number[][]) {
   return newTiles;
 }
 
-function moveX(tiles: number[][], dir: DirectionX) {
+function move(tiles: number[][], dir: keyof typeof Directions) {
   const rows = tiles.length;
   const cols = tiles[0].length;
 
+  const [dx, dy] = Directions[dir];
+  let rowIncrement = 1;
+  let colIncrement = 1;
   let startRow = 0;
-  let endRow = rows;
   let startCol = 0;
-  let endCol = cols;
 
-  const isInbounds = (col: number) => col >= 0 && col < cols;
+  // We want to look ahead where we are going, so that means that
+  // If we are moving towards the right we need to to start from the right,
+  // Likewise if we are moving down, we need to start from the bottom
+  if (dir === "right") {
+    startCol = cols - 1;
+    colIncrement = -1;
+  } else if (dir === "down") {
+    startRow = rows - 1;
+    rowIncrement = -1;
+  }
 
-  while (startRow < endRow) {
-    for (let col = cols - 1; col >= 0; col--) {
-      const currentRow = tiles[startRow];
-      const tile = currentRow[col];
+  const isInbounds = (col: number, row: number) =>
+    col >= 0 && col < cols && row >= 0 && row < rows;
 
+  for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
+    for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
+      const tile = tiles[y][x];
       if (!tile) {
         continue;
       }
 
-      // // Search next available position
-      // let previous = col;
-      // let current = previous;
-      // do {
-      //   previous = current;
-      //   current++;
-      //   // while there are no obstables
-      // } while (current < cols && !currentRow[current]);
-
-      let previous = col;
-      let next = previous + 1;
-      // Move next until an obstacle is found
-      while (isInbounds(next) && !currentRow[next]) {
-        previous = next;
-        next++;
+      // Find the farthest empty location
+      let [previousX, previousY] = [x, y];
+      let [nextX, nextY] = [previousX + dx, previousY + dy];
+      // Keep looking until an obstacle is found
+      while (isInbounds(nextX, nextY) && !tiles[nextY][nextX]) {
+        [previousX, previousY] = [nextX, nextY];
+        [nextX, nextY] = [nextX + dx, nextY + dy];
       }
 
-      if (isInbounds(next) && currentRow[next] === tile) {
-        // Merge tiles
-        currentRow[col] = 0;
-        currentRow[next] *= 2;
+      // Empty current tile since we are going to merge it or move it somewhere else
+      tiles[y][x] = 0;
+
+      // Can we merge the next tile?
+      if (isInbounds(nextX, nextY) && tiles[nextY][nextX] === tile) {
+        tiles[nextY][nextX] *= 2;
       } else {
         // Move tile to its new position
-        currentRow[col] = 0;
-        currentRow[previous] = tile;
+        tiles[previousY][previousX] = tile;
       }
     }
-
-    startRow++;
   }
+
   return cloneTiles(tiles);
 }
 
@@ -220,4 +192,4 @@ function Board(props: BoardProps) {
 }
 
 export default Board;
-export { moveY, moveX };
+export { move };
