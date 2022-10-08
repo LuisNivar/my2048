@@ -138,3 +138,29 @@ test("Merges tiles up", () => {
     [0, 0, 4],
   ]);
 });
+
+test("Only one tile is merged at a time when moving right", () => {
+  const tiles = [
+    [2, 2, 4],
+    [0, 0, 0],
+    [0, 0, 0],
+  ];
+  expect(move(tiles, "right")).toEqual([
+    [0, 4, 4],
+    [0, 0, 0],
+    [0, 0, 0],
+  ]);
+});
+
+test("Only one tile is merged at a time when moving down", () => {
+  const tiles = [
+    [2, 2, 0],
+    [2, 2, 0],
+    [4, 2, 0],
+  ];
+  expect(move(tiles, "down")).toEqual([
+    [0, 0, 0],
+    [4, 2, 0],
+    [4, 4, 0],
+  ]);
+});
