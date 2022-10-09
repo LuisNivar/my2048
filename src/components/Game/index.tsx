@@ -20,15 +20,8 @@ const Directions = {
   up: [0, -1],
 };
 
-function cloneTiles(tiles: number[][]) {
-  const newTiles = [...tiles];
-  for (let i = 0; i < newTiles.length; i++) {
-    newTiles[i] = [...tiles[i]];
-  }
-  return newTiles;
-}
-
 function move(tiles: number[][], dir: keyof typeof Directions) {
+  tiles = [...tiles];
   const rows = tiles.length;
   const cols = tiles[0].length;
 
@@ -81,7 +74,7 @@ function move(tiles: number[][], dir: keyof typeof Directions) {
     }
   }
 
-  return cloneTiles(tiles);
+  return tiles;
 }
 
 function Game(props: GameProps) {
