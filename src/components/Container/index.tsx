@@ -1,13 +1,22 @@
+import classNames from "classnames";
+import React from "react";
 import styles from "./index.module.css";
 
 export type ContainerProps = React.ComponentPropsWithoutRef<"div">;
 
-function Container({ className, children, ...rest }: ContainerProps) {
-  return (
-    <div className={`${styles.roundSquare} ${className}`} {...rest}>
-      {children}
-    </div>
-  );
-}
+const Container = React.forwardRef<HTMLDivElement | null, ContainerProps>(
+  (props, ref) => {
+    const { className, children, ...rest } = props;
+
+    const containerClass = classNames(styles.roundSquare, className);
+    return (
+      <div className={containerClass} ref={ref} {...rest}>
+        {children}
+      </div>
+    );
+  }
+);
+
+Container.displayName = "Container";
 
 export default Container;

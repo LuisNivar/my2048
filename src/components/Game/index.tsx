@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import { useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
 import ScoreBoard from "../ScoreBoard";
@@ -86,6 +86,7 @@ function move(tiles: number[][], dir: keyof typeof Directions) {
 
 function Game(props: GameProps) {
   const { score, bestScore, rows, cols } = props;
+  const boardRef = useRef<HTMLDivElement | null>(null);
 
   const gameClass = classNames(props.className, styles.game);
   const [tiles, setTiles] = useState<number[][]>(() => {
@@ -120,6 +121,11 @@ function Game(props: GameProps) {
     setTiles(nextTiles);
   };
 
+  useEffect(() => {
+    // Focus container on mount, so that the user can navigate the game using the controls directly
+    boardRef.current?.focus();
+  }, []);
+
   return (
     <div className={gameClass}>
       <MenuSection className={styles.menu} />
@@ -128,7 +134,12 @@ function Game(props: GameProps) {
         score={score}
         bestScore={bestScore}
       />
-      <Board className={styles.board} tiles={tiles} onKeyUp={handledKeyup} />
+      <Board
+        className={styles.board}
+        tiles={tiles}
+        onKeyUp={handledKeyup}
+        ref={boardRef}
+      />
     </div>
   );
 }
