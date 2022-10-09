@@ -86,6 +86,11 @@ function Tile(props: TileProps) {
     }
   }, [props.value, fontSize]);
 
+  if (props.value === 0) {
+    // Empty tile
+    return <></>;
+  }
+
   return (
     <div className={styles.tile} style={style} ref={tileRef}>
       {isSmallNumber ? (
