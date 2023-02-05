@@ -5,8 +5,8 @@ import Instruction from "./components/Instruction";
 function App() {
   const rows = 4;
   const columns = 4;
-  let score = 15;
-  let bestScore = 352;
+  let score = 0;
+  let bestScore = 0;
 
   return (
     <div className="app">

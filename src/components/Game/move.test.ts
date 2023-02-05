@@ -1,4 +1,4 @@
-import { move } from ".";
+import move from "./movement";
 
 test("Move tiles right", () => {
   const tiles = [
