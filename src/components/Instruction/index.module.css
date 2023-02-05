@@ -1,11 +1,10 @@
-.container {
+.container,
+.leftSec {
   display: flex;
   justify-content: space-between;
 }
 
 .leftSec {
-  display: flex;
-  justify-content: space-between;
   align-items: baseline;
 }
 
@@ -22,12 +21,31 @@
 
 .right {
   grid-area: right;
+  transform: rotate(90deg);
 }
 
 .down {
   grid-area: down;
+  transform: rotate(180deg);
 }
 
 .left {
   grid-area: left;
+  transform: rotate(-90deg);
+}
+
+.controls {
+  display: grid;
+  grid-template-areas:
+    ". up ."
+    "left down right";
+  gap: 0.25rem;
+}
+
+.up,
+.right,
+.down,
+.left {
+  width: 1.25rem;
+  height: 1.25rem;
 }

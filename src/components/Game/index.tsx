@@ -1,10 +1,11 @@
-import classNames from "classnames";
+import cn from "classnames";
 import { useState, KeyboardEvent, useRef, useEffect } from "react";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
 import ScoreBoard from "../ScoreBoard";
 import styles from "./index.module.css";
 
+//#region Types
 type GameProps = {
   className?: string;
   score: number;
@@ -13,12 +14,67 @@ type GameProps = {
   cols: number;
 };
 
+type GeneratorOptions = {
+  base?: number;
+  /** When true it randomly places a number equal to the base */
+  initial?: boolean;
+};
+//#endregion
+
+//#region Constants
 const Directions = {
   right: [1, 0],
   left: [-1, 0],
   down: [0, 1],
   up: [0, -1],
 };
+
+const EMPTY = 0;
+//#endregion
+
+//#region Utilities
+function initializeTiles(rows: number, cols: number) {
+  const tiles = Array<number[]>(rows);
+  for (let i = 0; i < tiles.length; i++) {
+    tiles[i] = Array<number>(cols).fill(EMPTY);
+  }
+
+  generateRandomTile(tiles, { initial: true });
+  generateRandomTile(tiles, { initial: true });
+
+  return tiles;
+}
+
+function generateRandomTile(tiles: number[][], options: GeneratorOptions = {}) {
+  const { base = 2, initial } = options;
+  const rowSize = tiles.length;
+  const colSize = tiles[0]?.length ?? 0;
+
+  const emptyTiles: [number, number][] = [];
+
+  for (let i = 0; i < rowSize; i++) {
+    for (let j = 0; j < colSize; j++) {
+      if (tiles[i][j] === EMPTY) {
+        emptyTiles.push([i, j]);
+      }
+    }
+  }
+
+  if (!emptyTiles) {
+    return;
+  }
+
+  const [row, col] = emptyTiles[Math.floor(Math.random() * emptyTiles.length)];
+
+  if (initial) {
+    // Make this tile equal to the base to make sure it can be merged
+    tiles[row][col] = base;
+  } else {
+    // Randomly choose between base^1 and base^2 with preference to base ^1
+    // The difficulty can be adjusted by changing the probability.
+    tiles[row][col] = Math.random() > 0.8 ? Math.pow(base, 2) : base;
+  }
+}
 
 function move(tiles: number[][], dir: keyof typeof Directions) {
   tiles = [...tiles];
@@ -62,7 +118,7 @@ function move(tiles: number[][], dir: keyof typeof Directions) {
       }
 
       // Empty current tile since we are going to merge it or move it somewhere else
-      tiles[y][x] = 0;
+      tiles[y][x] = EMPTY;
 
       // Can we merge the next tile?
       if (isInbounds(nextX, nextY) && tiles[nextY][nextX] === tile) {
@@ -73,26 +129,18 @@ function move(tiles: number[][], dir: keyof typeof Directions) {
       }
     }
   }
+  // Add a new tile every time the player makes a move
+  generateRandomTile(tiles);
 
   return tiles;
 }
+//#endregion
 
 function Game(props: GameProps) {
-  const { score, bestScore, rows, cols } = props;
+  const { className, score, bestScore, rows, cols } = props;
   const boardRef = useRef<HTMLDivElement | null>(null);
 
-  const gameClass = classNames(props.className, styles.game);
-  const [tiles, setTiles] = useState<number[][]>(() => {
-    const tiles = Array<number[]>(rows);
-    for (let i = 0; i < tiles.length; i++) {
-      tiles[i] = Array<number>(cols).fill(0);
-    }
-    // TODO create 2 random tiles
-    tiles[0][1] = 2;
-    tiles[1][3] = 2;
-
-    return tiles;
-  });
+  const [tiles, setTiles] = useState(() => initializeTiles(rows, cols));
 
   const handledKeyup = (e: KeyboardEvent) => {
     let nextTiles = tiles;
@@ -117,10 +165,10 @@ function Game(props: GameProps) {
   useEffect(() => {
     // Focus container on mount, so that the user can navigate the game using the controls directly
     boardRef.current?.focus();
-  }, []);
+  }, [boardRef]);
 
   return (
-    <div className={gameClass}>
+    <div className={cn(className, styles.game)}>
       <MenuSection className={styles.menu} />
       <ScoreBoard
         className={styles.scoreBoard}
