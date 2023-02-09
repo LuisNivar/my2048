@@ -1,0 +1,17 @@
+.container {
+  position: absolute;
+  width: 48vh;
+  height: 75vh;
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  justify-content: center;
+
+  background: rgba(4, 42, 43, 0.8);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+
+  color: var(--primary-light);
+  font-size: 2rem;
+  text-shadow: var(--bg-body) 2px 2px;
+}
