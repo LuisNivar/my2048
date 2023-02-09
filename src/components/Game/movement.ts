@@ -1,6 +1,15 @@
 import { EMPTY_TILE } from "./constants";
 import { generateRandomTile } from "./utils";
 
+//#region Typings
+type Vector = { x: number; y: number };
+
+type ObstaclePosition = {
+  previous: Vector;
+  next: Vector;
+};
+//#endregion
+
 const Directions = {
   right: [1, 0],
   left: [-1, 0],
@@ -10,13 +19,69 @@ const Directions = {
 
 export type AllowedMovements = keyof typeof Directions;
 
+//#region Helpers
+function isInbounds(tiles: number[][], col: number, row: number) {
+  const rows = tiles.length;
+  const cols = tiles[0].length ?? 0;
+
+  return col >= 0 && col < cols && row >= 0 && row < rows;
+}
+
+function findNextObstacle(
+  tiles: number[][],
+  row: number,
+  col: number,
+  dir: AllowedMovements
+): ObstaclePosition {
+  const [dx, dy] = Directions[dir];
+
+  // Find the farthest empty location
+  let [previousX, previousY] = [col, row];
+  let [nextX, nextY] = [previousX + dx, previousY + dy];
+  // Keep looking until an obstacle is found
+  while (isInbounds(tiles, nextX, nextY) && !tiles[nextY][nextX]) {
+    [previousX, previousY] = [nextX, nextY];
+    [nextX, nextY] = [nextX + dx, nextY + dy];
+  }
+
+  return {
+    previous: { x: previousX, y: previousY },
+    next: { x: nextX, y: nextY },
+  };
+}
+
+/**
+ * @returns Resulting score after moving the tiles
+ */
+function updateTilePosition(
+  tiles: number[][],
+  currentValue: number,
+  obstaclePosition: ObstaclePosition
+) {
+  const { next, previous } = obstaclePosition;
+
+  if (
+    isInbounds(tiles, next.x, next.y) &&
+    tiles[next.y][next.x] === currentValue
+  ) {
+    const newValue = tiles[next.y][next.x] * 2;
+    tiles[next.y][next.x] = newValue;
+
+    return newValue;
+  }
+
+  // There are no matching tiles, just move it to its new position
+  tiles[previous.y][previous.x] = currentValue;
+  return 0;
+}
+//#endregion
+
 function move(tiles: number[][], dir: AllowedMovements) {
   tiles = [...tiles];
   const rows = tiles.length;
   const cols = tiles[0].length;
-  const [dx, dy] = Directions[dir];
 
-  let points = 0;
+  let score = 0;
 
   let rowIncrement = 1;
   let colIncrement = 1;
@@ -34,43 +99,23 @@ function move(tiles: number[][], dir: AllowedMovements) {
     rowIncrement = -1;
   }
 
-  const isInbounds = (col: number, row: number) =>
-    col >= 0 && col < cols && row >= 0 && row < rows;
-
   for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
     for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
       const tile = tiles[y][x];
-      if (!tile) {
-        continue;
-      }
+      if (!tile) continue;
 
-      // Find the farthest empty location
-      let [previousX, previousY] = [x, y];
-      let [nextX, nextY] = [previousX + dx, previousY + dy];
-      // Keep looking until an obstacle is found
-      while (isInbounds(nextX, nextY) && !tiles[nextY][nextX]) {
-        [previousX, previousY] = [nextX, nextY];
-        [nextX, nextY] = [nextX + dx, nextY + dy];
-      }
-
+      const obstaclePosition = findNextObstacle(tiles, y, x, dir);
       // Empty current tile since we are going to merge it or move it somewhere else
       tiles[y][x] = EMPTY_TILE;
 
-      // Can we merge the next tile?
-      if (isInbounds(nextX, nextY) && tiles[nextY][nextX] === tile) {
-        const newValue = tiles[nextY][nextX] * 2;
-        tiles[nextY][nextX] = newValue;
-        points += newValue;
-      } else {
-        // Move tile to its new position
-        tiles[previousY][previousX] = tile;
-      }
+      score = updateTilePosition(tiles, tile, obstaclePosition);
     }
   }
+
   // Add a new tile every time the player makes a move
   generateRandomTile(tiles);
 
-  return { tiles, points };
+  return { tiles, score };
 }
 
 export default move;
