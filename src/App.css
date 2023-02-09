@@ -40,3 +40,9 @@
     background-position: 0% 50%;
   }
 }
+
+@media screen and (prefers-reduced-motion) {
+  .app {
+    animation: none;
+  }
+}
