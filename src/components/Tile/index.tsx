@@ -43,7 +43,9 @@ function getCSSColor(value: number) {
 const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
   (props, ref) => (
     <div className={styles.textStrokeWrapper} ref={ref}>
-      <p className={styles.textStroke}>{props.children}</p>
+      <p className={styles.textStroke} aria-hidden>
+        {props.children}
+      </p>
       <p className={styles.text}>{props.children}</p>
     </div>
   )
@@ -93,16 +95,17 @@ function Tile(props: TileProps) {
 
   return (
     <div className={styles.tile} style={style} ref={tileRef}>
-      {isSmallNumber ? (
-        // Display the number as is
-        <Stroke ref={textRef}>{props.value}</Stroke>
-      ) : (
-        // Show the number in scientific notation
-        <Stroke ref={textRef}>
-          {BASE}
-          <sup>{exponent(props.value)}</sup>
-        </Stroke>
-      )}
+      <Stroke ref={textRef}>
+        {isSmallNumber ? (
+          props.value
+        ) : (
+          // Display in scientific notation
+          <>
+            {BASE}
+            <sup>{exponent(props.value)}</sup>
+          </>
+        )}
+      </Stroke>
     </div>
   );
 }
