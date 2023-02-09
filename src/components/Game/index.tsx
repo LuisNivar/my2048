@@ -2,6 +2,7 @@ import cn from "classnames";
 import { KeyboardEvent, useEffect, useReducer, useRef } from "react";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
+import RetryGame from "../RetryGame";
 import ScoreBoard from "../ScoreBoard";
 import { KEY_MAP } from "./constants";
 import styles from "./index.module.css";
@@ -35,23 +36,17 @@ function Game(props: GameProps) {
   );
 
   const handledKeyup = (e: KeyboardEvent) => {
-    if (e.key in KEY_MAP) {
-      const { tiles, points: score } = move(
+    if (e.key in KEY_MAP && !state.hasGameEnded) {
+      const { tiles, score } = move(
         state.tiles,
         KEY_MAP[e.key as keyof typeof KEY_MAP]
       );
 
       dispatch({
         type: "updated_tiles",
-        tiles: tiles,
+        tiles,
+        score,
       });
-
-      if (score > 0) {
-        dispatch({
-          type: "updated_score",
-          points: score,
-        });
-      }
     }
   };
 
@@ -62,6 +57,9 @@ function Game(props: GameProps) {
 
   return (
     <div className={cn(className, styles.game)}>
+      {state.hasGameEnded && (
+        <RetryGame className={styles.rety} gameDispatch={dispatch} />
+      )}
       <MenuSection className={styles.menu} gameDispatch={dispatch} />
       <ScoreBoard
         className={styles.scoreBoard}

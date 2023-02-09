@@ -1,5 +1,5 @@
 import { EMPTY_TILE } from "./constants";
-import { generateRandomTile } from "./utils";
+import { generateRandomTile, isGameOver } from "./utils";
 
 export type BoardSize = {
   rows: number;
@@ -11,16 +11,14 @@ export type GameState = {
   tiles: number[][];
   score: number;
   bestScore: number;
+  hasGameEnded?: boolean;
 };
 
 export type Action =
   | {
-      type: "updated_score";
-      points: number;
-    }
-  | {
       type: "updated_tiles";
       tiles: number[][];
+      score: number;
     }
   | {
       type: "reset";
@@ -38,25 +36,22 @@ export function createInitialState(initialState: GameState) {
   return {
     ...initialState,
     score: 0,
+    hasGameEnded: false,
     tiles,
   };
 }
 
 export function GameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
-    case "updated_score": {
-      const currentScore = state.score + action.points;
-      return {
-        ...state,
-        score: currentScore,
-        bestScore: Math.max(currentScore, state.bestScore),
-      };
-    }
-
     case "updated_tiles": {
+      const currentScore = state.score + action.score;
+
       return {
         ...state,
         tiles: action.tiles,
+        score: currentScore,
+        bestScore: Math.max(currentScore, state.bestScore),
+        hasGameEnded: isGameOver(action.tiles),
       };
     }
 
