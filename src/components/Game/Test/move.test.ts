@@ -1,4 +1,4 @@
-import move from "./movement";
+import move from "../movement";
 
 test("Move tiles right", () => {
   const tiles = [
@@ -6,7 +6,7 @@ test("Move tiles right", () => {
     [2, 0, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "right")).toEqual([
+  expect(move(tiles, "right").tiles).toEqual([
     [0, 0, 2],
     [0, 0, 2],
     [0, 0, 0],
@@ -19,7 +19,7 @@ test("Moving right doesn't change anything if tile is at the last position", () 
     [0, 0, 2],
     [0, 0, 0],
   ];
-  expect(move(tiles, "right")).toEqual(tiles);
+  expect(move(tiles, "right").tiles).toEqual(tiles);
 });
 
 test("Move tiles right with obstacles, and no merge possible", () => {
@@ -28,7 +28,7 @@ test("Move tiles right with obstacles, and no merge possible", () => {
     [2, 1, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "right")).toEqual([
+  expect(move(tiles, "right").tiles).toEqual([
     [0, 0, 0],
     [0, 2, 1],
     [0, 0, 0],
@@ -41,7 +41,7 @@ test("Move tiles right with merge at middle", () => {
     [2, 2, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "right")).toEqual([
+  expect(move(tiles, "right").tiles).toEqual([
     [0, 0, 0],
     [0, 0, 4],
     [0, 0, 0],
@@ -54,7 +54,7 @@ test("Move tiles right with multiple merges", () => {
     [0, 4, 4],
     [1, 2, 1],
   ];
-  expect(move(tiles, "right")).toEqual([
+  expect(move(tiles, "right").tiles).toEqual([
     [0, 4, 1],
     [0, 0, 8],
     [1, 2, 1],
@@ -67,7 +67,7 @@ test("Move tiles left", () => {
     [2, 0, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "left")).toEqual([
+  expect(move(tiles, "left").tiles).toEqual([
     [2, 0, 0],
     [2, 0, 0],
     [0, 0, 0],
@@ -80,7 +80,7 @@ test("Merge tiles left", () => {
     [2, 0, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "left")).toEqual([
+  expect(move(tiles, "left").tiles).toEqual([
     [4, 0, 0],
     [2, 0, 0],
     [0, 0, 0],
@@ -93,7 +93,7 @@ test("Move tiles down", () => {
     [2, 0, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "down")).toEqual([
+  expect(move(tiles, "down").tiles).toEqual([
     [0, 0, 0],
     [1, 0, 0],
     [2, 2, 0],
@@ -106,7 +106,7 @@ test("Merge tiles down", () => {
     [2, 2, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "down")).toEqual([
+  expect(move(tiles, "down").tiles).toEqual([
     [0, 0, 0],
     [1, 0, 0],
     [2, 4, 0],
@@ -119,7 +119,7 @@ test("Move tiles up", () => {
     [0, 4, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "up")).toEqual([
+  expect(move(tiles, "up").tiles).toEqual([
     [0, 4, 0],
     [0, 0, 0],
     [0, 0, 0],
@@ -132,7 +132,7 @@ test("Merges tiles up", () => {
     [0, 4, 2],
     [2, 4, 4],
   ];
-  expect(move(tiles, "up")).toEqual([
+  expect(move(tiles, "up").tiles).toEqual([
     [4, 2, 8],
     [0, 8, 2],
     [0, 0, 4],
@@ -145,7 +145,7 @@ test("Only one tile is merged at a time when moving right", () => {
     [0, 0, 0],
     [0, 0, 0],
   ];
-  expect(move(tiles, "right")).toEqual([
+  expect(move(tiles, "right").tiles).toEqual([
     [0, 4, 4],
     [0, 0, 0],
     [0, 0, 0],
@@ -158,7 +158,7 @@ test("Only one tile is merged at a time when moving down", () => {
     [2, 2, 0],
     [4, 2, 0],
   ];
-  expect(move(tiles, "down")).toEqual([
+  expect(move(tiles, "down").tiles).toEqual([
     [0, 0, 0],
     [4, 2, 0],
     [4, 4, 0],
