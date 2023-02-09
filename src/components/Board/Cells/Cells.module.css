@@ -5,10 +5,6 @@
   gap: 1rem;
 }
 
-.alignTop {
-  align-items: flex-start;
-}
-
 .cell {
   width: var(--tile-size);
   height: var(--tile-size);
