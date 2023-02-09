@@ -6,24 +6,9 @@ type CellProps = {
   columns: number;
 };
 
-/**
- * Extending CSS properties to add custom ones.
- * @see https://github.com/frenic/csstype/issues/63#issuecomment-466910109
- * @see https://github.com/frenic/csstype#what-should-i-do-when-i-get-type-errors
- */
-interface CellsStyle extends React.CSSProperties {
-  "--columns": number;
-  "--rows": number;
-}
-
 const Cells = forwardRef<Point[], CellProps>(function Cells(props, ref) {
   const { rows, columns } = props;
   const cellsRef = useRef<Array<HTMLDivElement | null>>([]);
-
-  const gridStyle: CellsStyle = {
-    "--columns": columns,
-    "--rows": rows,
-  };
 
   useImperativeHandle(
     ref,
@@ -52,7 +37,10 @@ const Cells = forwardRef<Point[], CellProps>(function Cells(props, ref) {
   }
 
   return (
-    <div className={styles.grid} style={gridStyle}>
+    <div
+      className={styles.grid}
+      style={{ "--columns": columns, "--rows": rows }}
+    >
       {cells}
     </div>
   );

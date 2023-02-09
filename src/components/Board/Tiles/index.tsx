@@ -13,8 +13,6 @@ function Tiles(props: TilesProps) {
   const offsetX = cellsPosition[0]?.x ?? 0;
   const offSetY = cellsPosition[0]?.y ?? 0;
 
-  console.log(cellsPosition);
-
   return (
     <>
       {cellsPosition.map((position, index) => {
