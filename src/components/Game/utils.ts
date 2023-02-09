@@ -16,27 +16,28 @@ export function isGameOver(tiles: number[][]) {
   const rows = tiles.length;
   const cols = tiles[0].length;
 
-  // verify the rest of grid
   for (let i = 0; i < rows; i++) {
-    for (let j = 0; j < cols - 1; j++) {
+    for (let j = 0; j < cols; j++) {
       const current = tiles[i][j];
-      const rightTile = tiles[i][j + 1];
 
-      const hasEmptyTiles = current === EMPTY_TILE || rightTile === EMPTY_TILE;
+      if (current === EMPTY_TILE) {
+        return false;
+      }
+
       const isLastRow = i === rows - 1;
+      const isLastCol = j === cols - 1;
 
-      // Can we continue the game?
       if (
-        hasEmptyTiles ||
-        // We can merge to the right
-        current === rightTile ||
         // We can merge down
-        (!isLastRow && current === tiles[i + 1][j])
+        (!isLastRow && current === tiles[i + 1][j]) ||
+        // We can merge right
+        (!isLastCol && current === tiles[i][j + 1])
       ) {
         return false;
       }
     }
   }
+
   return true;
 }
 
