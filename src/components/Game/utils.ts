@@ -12,8 +12,37 @@ export function getAvailableTiles(tiles: number[][]) {
   return emptyTiles;
 }
 
+export function isGameOver(tiles: number[][]) {
+  const rows = tiles.length;
+  const cols = tiles[0].length;
+
+  // verify the rest of grid
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols - 1; j++) {
+      const current = tiles[i][j];
+      const rightTile = tiles[i][j + 1];
+
+      const hasEmptyTiles = current === EMPTY_TILE || rightTile === EMPTY_TILE;
+      const isLastRow = i === rows - 1;
+
+      // Can we continue the game?
+      if (
+        hasEmptyTiles ||
+        // We can merge to the right
+        current === rightTile ||
+        // We can merge down
+        (!isLastRow && current === tiles[i + 1][j])
+      ) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 export function generateRandomTile(tiles: number[][], base = 2) {
   const emptyTiles = getAvailableTiles(tiles);
+
   if (emptyTiles) {
     const randomTile = Math.floor(Math.random() * emptyTiles.length);
     const [row, col] = emptyTiles[randomTile];
