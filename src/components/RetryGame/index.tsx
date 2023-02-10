@@ -5,12 +5,12 @@ import { Action as GameAction } from "../Game/state";
 import IconButton from "../IconButton";
 import styles from "./index.module.css";
 
-type retryGame = {
+type RetryGameProps = {
   className?: string;
   gameDispatch: React.Dispatch<GameAction>;
 };
 
-function RetryGame(props: retryGame) {
+function RetryGame(props: RetryGameProps) {
   const { className, gameDispatch } = props;
   const containerClass = cn(className, styles.container);
 
