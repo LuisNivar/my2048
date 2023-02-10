@@ -1,14 +1,17 @@
 .container {
   position: absolute;
-  width: 48vh;
-  height: 75vh;
-  display: inline-flex;
+  top: 0px;
+  left: 0px;
+  z-index: 10;
+
+  width: 100vw;
+  height: 100vh;
+
   flex-direction: column;
-  vertical-align: middle;
   justify-content: center;
 
   background: rgba(4, 42, 43, 0.8);
-  z-index: 10;
+  border-radius: 0px;
   backdrop-filter: blur(4px);
 
   color: var(--primary-light);
