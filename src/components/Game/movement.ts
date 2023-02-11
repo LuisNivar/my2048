@@ -5,7 +5,7 @@ import { generateRandomTile } from "./utils";
 type Vector = { x: number; y: number };
 
 type ObstaclePosition = {
-  previous: Vector;
+  current: Vector;
   next: Vector;
 };
 //#endregion
@@ -45,7 +45,7 @@ function findNextObstacle(
   }
 
   return {
-    previous: { x: previousX, y: previousY },
+    current: { x: previousX, y: previousY },
     next: { x: nextX, y: nextY },
   };
 }
@@ -58,8 +58,9 @@ function updateTilePosition(
   currentValue: number,
   obstaclePosition: ObstaclePosition
 ) {
-  const { next, previous } = obstaclePosition;
+  const { next, current } = obstaclePosition;
 
+  // Can this tile be merged?
   if (
     isInbounds(tiles, next.x, next.y) &&
     tiles[next.y][next.x] === currentValue
@@ -71,7 +72,7 @@ function updateTilePosition(
   }
 
   // There are no matching tiles, just move it to its new position
-  tiles[previous.y][previous.x] = currentValue;
+  tiles[current.y][current.x] = currentValue;
   return 0;
 }
 //#endregion
@@ -113,7 +114,10 @@ function move(tiles: number[][], dir: AllowedMovements) {
   }
 
   // Add a new tile every time the player makes a move
-  generateRandomTile(tiles);
+  const newTile = generateRandomTile(tiles);
+  if (newTile) {
+    tiles[newTile.row][newTile.col] = newTile.value;
+  }
 
   return { tiles, score };
 }
