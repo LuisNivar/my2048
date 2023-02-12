@@ -1,5 +1,5 @@
 import { EMPTY_TILE } from "./constants";
-import { generateRandomTile } from "./utils";
+import { insertRandomTile } from "./utils";
 
 //#region Typings
 type Vector = { x: number; y: number };
@@ -114,10 +114,7 @@ function move(tiles: number[][], dir: AllowedMovements) {
   }
 
   // Add a new tile every time the player makes a move
-  const newTile = generateRandomTile(tiles);
-  if (newTile) {
-    tiles[newTile.row][newTile.col] = newTile.value;
-  }
+  insertRandomTile(tiles);
 
   return { tiles, score };
 }

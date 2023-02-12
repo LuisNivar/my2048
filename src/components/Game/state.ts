@@ -1,5 +1,5 @@
 import { EMPTY_TILE } from "./constants";
-import { generateRandomTile, isGameOver } from "./utils";
+import { insertRandomTile, isGameOver } from "./utils";
 
 export type BoardSize = {
   rows: number;
@@ -31,12 +31,10 @@ export function createInitialState(initialState: GameState) {
     tiles[i] = Array<number>(cols).fill(EMPTY_TILE);
   }
 
-  generateRandomTile(tiles);
+  insertRandomTile(tiles);
 
   return {
     ...initialState,
-    score: 0,
-    hasGameEnded: false,
     tiles,
   };
 }
