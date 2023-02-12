@@ -24,6 +24,7 @@ function Tiles(props: TilesProps) {
             value={tiles[row][col]}
             x={position.x - offsetX}
             y={position.y - offSetY}
+            data-testid={`${row},${col}`}
           />
         );
       })}

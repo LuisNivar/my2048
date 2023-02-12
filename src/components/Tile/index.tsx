@@ -12,6 +12,7 @@ export type TileProps = {
   value: number;
   x: number;
   y: number;
+  "data-testid"?: string;
 };
 
 function exponent(value: number) {
@@ -37,58 +38,63 @@ function getCSSColor(value: number) {
   return `hsl(${hue}, 81%, 67%)`;
 }
 
-function Tile(props: TileProps) {
+function Tile({ value, x, y, ...rest }: TileProps) {
   const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
 
   const tileRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
-  const numOfDigits = Math.floor(Math.log10(props.value) + 1);
+  const numOfDigits = Math.floor(Math.log10(value) + 1);
   const isSmallNumber = numOfDigits <= MAX_DIGITS;
 
   const style = {
-    background: getCSSColor(props.value),
+    background: getCSSColor(value),
     fontSize: fontSize + "px",
-    "--x": props.x + "px",
-    "--y": props.y + "px",
+    "--x": x + "px",
+    "--y": y + "px",
   };
 
   // Reset font size when value changes
   useLayoutEffect(() => {
     setFontSize(TILE_FONT_SIZE);
-  }, [props.value]);
+  }, [value]);
 
   // Dynamically resize the font size to fit inside the tile's width
   useLayoutEffect(() => {
+    if (
+      !tileRef.current ||
+      !textRef.current ||
+      process.env.NODE_ENV === "test" // Skip testing font resizing
+    ) {
+      return;
+    }
+
     const tileDiv = tileRef.current;
     const textDiv = textRef.current;
 
-    if (!tileDiv || !textDiv) {
-      return;
-    }
     const tileWidth = tileDiv.clientWidth - TILE_PADDING;
     const textWidth = textDiv.clientWidth;
 
     if (tileWidth < textWidth) {
       setFontSize(fontSize - 1);
     }
-  }, [props.value, fontSize]);
+  }, [value, fontSize]);
 
-  if (props.value === 0) {
+  if (value === 0) {
     // Empty tile
     return <></>;
   }
 
   return (
-    <div className={styles.tile} style={style} ref={tileRef}>
+    <div className={styles.tile} style={style} ref={tileRef} {...rest}>
       <TextStroke ref={textRef}>
         {isSmallNumber ? (
-          props.value
+          value
         ) : (
           // Display in scientific notation
           <>
             {BASE}
-            <sup>{exponent(props.value)}</sup>
+            <sup>{exponent(value)}</sup>
           </>
         )}
       </TextStroke>

@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./Stroke.module.css";
+import styles from "./TextStroke.module.css";
 
 type TextStrokeProps = {
   children?: React.ReactNode;
