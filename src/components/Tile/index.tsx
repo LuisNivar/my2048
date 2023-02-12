@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
+import TextStroke from "./TextStroke";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
@@ -11,10 +12,6 @@ export type TileProps = {
   value: number;
   x: number;
   y: number;
-};
-
-type StrokeProps = {
-  children: React.ReactNode;
 };
 
 function exponent(value: number) {
@@ -39,17 +36,6 @@ function getCSSColor(value: number) {
 
   return `hsl(${hue}, 81%, 67%)`;
 }
-
-const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
-  (props, ref) => (
-    <div className={styles.textStrokeWrapper} ref={ref}>
-      <p className={styles.textStroke} aria-hidden>
-        {props.children}
-      </p>
-      <p className={styles.text}>{props.children}</p>
-    </div>
-  )
-);
 
 function Tile(props: TileProps) {
   const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
@@ -95,7 +81,7 @@ function Tile(props: TileProps) {
 
   return (
     <div className={styles.tile} style={style} ref={tileRef}>
-      <Stroke ref={textRef}>
+      <TextStroke ref={textRef}>
         {isSmallNumber ? (
           props.value
         ) : (
@@ -105,7 +91,7 @@ function Tile(props: TileProps) {
             <sup>{exponent(props.value)}</sup>
           </>
         )}
-      </Stroke>
+      </TextStroke>
     </div>
   );
 }
