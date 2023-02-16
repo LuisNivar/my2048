@@ -53,7 +53,7 @@ test("Moving a tile right with no obstacles ends at the right edge of the screen
   expect(screen.getByTestId("0,2")).toHaveTextContent(/^2/);
 });
 
-test("Moving a tile down with no obstacles ends at the down edge of the screen", async () => {
+test("Moving a tile down with no obstacles ends at the bottom edge of the screen", async () => {
   const user = userEvent.setup();
 
   mockinsertRandomTile.mockImplementationOnce((tiles) => {
@@ -83,7 +83,7 @@ test("Moving a tile left with no obstacles ends at the left edge of the screen",
   expect(screen.getByTestId("0,0")).toHaveTextContent(/^2/);
 });
 
-test("Moving a tile up with no obstacles ends at the up edge of the screen", async () => {
+test("Moving a tile up with no obstacles ends at the upper edge of the screen", async () => {
   const user = userEvent.setup();
 
   mockinsertRandomTile.mockImplementationOnce((tiles) => {
@@ -96,4 +96,60 @@ test("Moving a tile up with no obstacles ends at the up edge of the screen", asy
 
   expect(screen.queryByTestId("2,0")).toBe(null);
   expect(screen.getByTestId("0,0")).toHaveTextContent(/^2/);
+});
+
+test("Should merge tile right when ArrowRight is pressed", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 0, col: 0, value: 4 });
+    insertTile(tiles, { row: 0, col: 1, value: 4 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowRight]");
+
+  expect(screen.getByTestId("0,2")).toHaveTextContent(/^8/);
+});
+
+test("Should merge tile down when ArrowDown is pressed", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 0, col: 0, value: 1024 });
+    insertTile(tiles, { row: 2, col: 0, value: 1024 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowDown]");
+
+  expect(screen.getByTestId("2,0")).toHaveTextContent(/^2048/);
+});
+
+test("Should merge tile left when ArrowLeft is pressed", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 1, col: 2, value: 16 });
+    insertTile(tiles, { row: 1, col: 0, value: 16 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowLeft]");
+
+  expect(screen.getByTestId("1,0")).toHaveTextContent(/^32/);
+});
+
+test("Should merge tile up when ArrowUp is pressed", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 1, col: 2, value: 2 });
+    insertTile(tiles, { row: 2, col: 2, value: 2 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowUp]");
+
+  expect(screen.getByTestId("0,2")).toHaveTextContent(/^4/);
 });
