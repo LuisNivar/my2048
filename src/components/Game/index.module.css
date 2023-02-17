@@ -16,4 +16,5 @@
 
 .board {
   grid-area: board;
+  user-select: none;
 }

@@ -22,6 +22,12 @@ function insertTile(
   tiles[row][col] = value;
 }
 
+test("Game automatically focuses on the board", () => {
+  render(<Game rows={3} cols={3} />);
+
+  expect(screen.getByLabelText("2048 game board")).toHaveFocus();
+});
+
 test("The game initiates with a single tile placed randomly", () => {
   render(<Game rows={3} cols={3} />);
 
