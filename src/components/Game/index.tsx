@@ -1,10 +1,13 @@
 import cn from "classnames";
-import { KeyboardEvent, useEffect, useReducer, useRef } from "react";
+import { useReducer } from "react";
+import { useSwipeable } from "react-swipeable";
+import useAutoFocus from "../../hooks/useAutoFocus";
+import mergeRefs from "../../utils/mergeRefs";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
 import RetryGame from "../RetryGame";
 import ScoreBoard from "../ScoreBoard";
-import { KEY_MAP } from "./constants";
+import { Controls, KEY_MAP } from "./constants";
 import styles from "./index.module.css";
 import move from "./movement";
 import { createInitialState, GameReducer, GameState } from "./state";
@@ -20,7 +23,14 @@ type GameProps = {
 //#region Utilities
 function Game(props: GameProps) {
   const { className, score, bestScore, rows, cols } = props;
-  const boardRef = useRef<HTMLDivElement | null>(null);
+  const { ref: swipeRefs, ...touchEventHandlers } = useSwipeable({
+    onSwipedLeft: () => handleMove("ArrowLeft"),
+    onSwipedRight: () => handleMove("ArrowRight"),
+    onSwipedUp: () => handleMove("ArrowUp"),
+    onSwipedDown: () => handleMove("ArrowDown"),
+  });
+
+  const autoFocusRef = useAutoFocus();
 
   const initialState: GameState = {
     dimensions: { rows, cols },
@@ -36,12 +46,9 @@ function Game(props: GameProps) {
     createInitialState
   );
 
-  const handledKeyup = (e: KeyboardEvent) => {
-    if (e.key in KEY_MAP && !state.hasGameEnded) {
-      const { tiles, score } = move(
-        state.tiles,
-        KEY_MAP[e.key as keyof typeof KEY_MAP]
-      );
+  const handleMove = (key: Controls) => {
+    if (!state.hasGameEnded) {
+      const { tiles, score } = move(state.tiles, KEY_MAP[key]);
 
       dispatch({
         type: "updated_tiles",
@@ -50,11 +57,6 @@ function Game(props: GameProps) {
       });
     }
   };
-
-  useEffect(() => {
-    // Focus container on mount, so that the user can navigate the game using the controls directly
-    boardRef.current?.focus();
-  }, [boardRef]);
 
   return (
     <div className={cn(className, styles.game)}>
@@ -66,12 +68,15 @@ function Game(props: GameProps) {
         className={styles.scoreBoard}
         score={state.score}
         bestScore={state.bestScore}
+        aria-label="Score board"
       />
       <Board
+        ref={mergeRefs(swipeRefs, autoFocusRef)}
         className={styles.board}
         tiles={state.tiles}
-        onKeyUp={handledKeyup}
-        ref={boardRef}
+        aria-label="2048 game board"
+        onKeyUp={(e) => handleMove(e.key as Controls)}
+        {...touchEventHandlers}
       />
     </div>
   );
