@@ -41,7 +41,7 @@ export function isGameOver(tiles: number[][]) {
   return true;
 }
 
-export function generateRandomTile(tiles: number[][], base = 2) {
+export function insertRandomTile(tiles: number[][], base = 2) {
   const emptyTiles = getAvailableTiles(tiles);
 
   if (emptyTiles) {

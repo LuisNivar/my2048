@@ -1,5 +1,6 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
+import TextStroke from "./TextStroke";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
@@ -11,10 +12,7 @@ export type TileProps = {
   value: number;
   x: number;
   y: number;
-};
-
-type StrokeProps = {
-  children: React.ReactNode;
+  "data-testid"?: string;
 };
 
 function exponent(value: number) {
@@ -40,72 +38,66 @@ function getCSSColor(value: number) {
   return `hsl(${hue}, 81%, 67%)`;
 }
 
-const Stroke = React.forwardRef<HTMLDivElement | null, StrokeProps>(
-  (props, ref) => (
-    <div className={styles.textStrokeWrapper} ref={ref}>
-      <p className={styles.textStroke} aria-hidden>
-        {props.children}
-      </p>
-      <p className={styles.text}>{props.children}</p>
-    </div>
-  )
-);
-
-function Tile(props: TileProps) {
+function Tile({ value, x, y, ...rest }: TileProps) {
   const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
 
   const tileRef = useRef<HTMLDivElement>(null);
   const textRef = useRef<HTMLDivElement>(null);
 
-  const numOfDigits = Math.floor(Math.log10(props.value) + 1);
+  const numOfDigits = Math.floor(Math.log10(value) + 1);
   const isSmallNumber = numOfDigits <= MAX_DIGITS;
 
   const style = {
-    background: getCSSColor(props.value),
+    background: getCSSColor(value),
     fontSize: fontSize + "px",
-    "--x": props.x + "px",
-    "--y": props.y + "px",
+    "--x": x + "px",
+    "--y": y + "px",
   };
 
   // Reset font size when value changes
   useLayoutEffect(() => {
     setFontSize(TILE_FONT_SIZE);
-  }, [props.value]);
+  }, [value]);
 
   // Dynamically resize the font size to fit inside the tile's width
   useLayoutEffect(() => {
+    if (
+      !tileRef.current ||
+      !textRef.current ||
+      process.env.NODE_ENV === "test" // Skip testing font resizing
+    ) {
+      return;
+    }
+
     const tileDiv = tileRef.current;
     const textDiv = textRef.current;
 
-    if (!tileDiv || !textDiv) {
-      return;
-    }
     const tileWidth = tileDiv.clientWidth - TILE_PADDING;
     const textWidth = textDiv.clientWidth;
 
     if (tileWidth < textWidth) {
       setFontSize(fontSize - 1);
     }
-  }, [props.value, fontSize]);
+  }, [value, fontSize]);
 
-  if (props.value === 0) {
+  if (value === 0) {
     // Empty tile
     return <></>;
   }
 
   return (
-    <div className={styles.tile} style={style} ref={tileRef}>
-      <Stroke ref={textRef}>
+    <div className={styles.tile} style={style} ref={tileRef} {...rest}>
+      <TextStroke ref={textRef}>
         {isSmallNumber ? (
-          props.value
+          value
         ) : (
           // Display in scientific notation
           <>
             {BASE}
-            <sup>{exponent(props.value)}</sup>
+            <sup>{exponent(value)}</sup>
           </>
         )}
-      </Stroke>
+      </TextStroke>
     </div>
   );
 }

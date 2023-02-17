@@ -1,6 +1,7 @@
 import "./App.css";
 import Game from "./components/Game";
 import Instruction from "./components/Instruction";
+import TextStrokeFilter from "./components/Tile/TextStroke/TextStrokeFilter";
 
 function App() {
   const rows = 4;
@@ -20,6 +21,7 @@ function App() {
         />
         <Instruction className="instruction" />
       </div>
+      <TextStrokeFilter />
     </div>
   );
 }

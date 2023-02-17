@@ -10,11 +10,11 @@ import move from "./movement";
 import { createInitialState, GameReducer, GameState } from "./state";
 
 type GameProps = {
-  className?: string;
-  score: number;
-  bestScore: number;
   rows: number;
   cols: number;
+  className?: string;
+  score?: number;
+  bestScore?: number;
 };
 
 //#region Utilities
@@ -25,8 +25,9 @@ function Game(props: GameProps) {
   const initialState: GameState = {
     dimensions: { rows, cols },
     tiles: [],
-    score,
-    bestScore,
+    bestScore: bestScore ?? 0,
+    score: score ?? 0,
+    hasGameEnded: false,
   };
 
   const [state, dispatch] = useReducer(
