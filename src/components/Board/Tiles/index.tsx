@@ -2,7 +2,7 @@ import Tile from "../../Tile";
 
 type TilesProps = {
   tiles: number[][];
-  cellsPosition: Point[];
+  cellsPosition: Vector[];
 };
 
 function Tiles(props: TilesProps) {

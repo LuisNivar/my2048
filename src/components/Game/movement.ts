@@ -2,8 +2,6 @@ import { EMPTY_TILE } from "./constants";
 import { insertRandomTile } from "./utils";
 
 //#region Typings
-type Vector = { x: number; y: number };
-
 type ObstaclePosition = {
   current: Vector;
   next: Vector;
