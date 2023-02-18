@@ -12,11 +12,11 @@ export type BoardProps = ContainerProps & {
 const Board = React.forwardRef<HTMLDivElement | null, BoardProps>(
   function Board(props, containerRef) {
     const { tiles, className, ...rest } = props;
-    const [cellsPosition, setCellsPosition] = useState<Point[]>([]);
+    const [cellsPosition, setCellsPosition] = useState<Vector[]>([]);
     const rows = tiles.length;
     const columns = tiles[0].length ?? 0;
 
-    const cellsRef = useCallback((positions: Point[]) => {
+    const cellsRef = useCallback((positions: Vector[]) => {
       setCellsPosition(positions);
     }, []);
 
