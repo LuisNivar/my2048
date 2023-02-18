@@ -5,7 +5,7 @@ function mergeRefs(
     refs.forEach((ref) => {
       if (typeof ref === "function") {
         ref(value);
-      } else if (ref != null) {
+      } else {
         ref.current = value;
       }
     });

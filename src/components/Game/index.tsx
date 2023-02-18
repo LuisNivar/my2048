@@ -28,6 +28,7 @@ function Game(props: GameProps) {
     onSwipedRight: () => handleMove("ArrowRight"),
     onSwipedUp: () => handleMove("ArrowUp"),
     onSwipedDown: () => handleMove("ArrowDown"),
+    preventScrollOnSwipe: true,
   });
 
   const autoFocusRef = useAutoFocus();

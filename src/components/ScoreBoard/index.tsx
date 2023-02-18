@@ -1,4 +1,4 @@
-import React from "react";
+import cn from "classnames";
 import Container from "../Container";
 import styles from "./index.module.css";
 
@@ -12,20 +12,17 @@ function padZero(num: number, length: number) {
   return String(num).padStart(length, "0");
 }
 
-function ScoreBoard(props: ScoreType) {
-  const score = padZero(props.score, 7);
-  const bestScore = padZero(props.bestScore, 7);
-
+function ScoreBoard({ score, bestScore, className }: ScoreType) {
   return (
-    <div className={`${styles.scoreBoard} ${props.className}`}>
-      <Container className={`${styles.marginBottom} ${styles.padding}`}>
-        <p className={styles.title}>Score:</p>
-        <p className={styles.score}>{score}</p>
+    <div className={cn(styles.scoreBoard, className)}>
+      <Container className={styles.container}>
+        <p className={styles.title}>Score</p>
+        <p className={styles.score}>{padZero(score, 7)}</p>
       </Container>
 
-      <Container className={styles.padding}>
-        <p className={styles.title}>Best:</p>
-        <p className={styles.score}>{bestScore} </p>
+      <Container className={styles.container}>
+        <p className={styles.title}>Best</p>
+        <p className={styles.score}>{padZero(bestScore, 7)} </p>
       </Container>
     </div>
   );

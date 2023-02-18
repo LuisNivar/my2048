@@ -22,7 +22,7 @@ const Board = React.forwardRef<HTMLDivElement | null, BoardProps>(
 
     return (
       <Container
-        className={cn(className, styles.alignTop)}
+        className={cn(className, styles.board)}
         tabIndex={0}
         ref={containerRef}
         {...rest}

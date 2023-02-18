@@ -22,13 +22,15 @@ function MenuSection(props: menuSection) {
   return (
     <Container className={containerClass}>
       <h3 className={styles.title}> Elegant 2048 </h3>
-      <IconButton className={styles.menu} Icon={MenuIcon} title="Menu" />
-      <IconButton
-        className={styles.reload}
-        Icon={ReloadIcon}
-        title="Reload"
-        onClick={handleReset}
-      />
+      <div className={styles.buttonGroup}>
+        <IconButton className={styles.menu} Icon={MenuIcon} title="Menu" />
+        <IconButton
+          className={styles.reload}
+          Icon={ReloadIcon}
+          title="Reload"
+          onClick={handleReset}
+        />
+      </div>
     </Container>
   );
 }
