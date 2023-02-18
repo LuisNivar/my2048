@@ -5,5 +5,9 @@
 
 .buttonGroup {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-3);
+}
+
+.title {
+  margin-bottom: var(--space-3);
 }

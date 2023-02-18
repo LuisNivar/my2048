@@ -21,14 +21,20 @@ function MenuSection(props: menuSection) {
 
   return (
     <Container className={containerClass}>
-      <h3 className={styles.title}> Elegant 2048 </h3>
+      <h1 className={cn(styles.title, "text-2xl")}> Elegant 2048 </h1>
       <div className={styles.buttonGroup}>
-        <IconButton className={styles.menu} Icon={MenuIcon} title="Menu" />
+        <IconButton
+          className={styles.menu}
+          Icon={MenuIcon}
+          title="Menu"
+          aria-label="Go to menu"
+        />
         <IconButton
           className={styles.reload}
           Icon={ReloadIcon}
           title="Reload"
           onClick={handleReset}
+          aria-label="New game"
         />
       </div>
     </Container>

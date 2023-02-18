@@ -23,14 +23,14 @@ function Instruction(props: instructionProps) {
           <ArrowKey className={cn(styles.left)} />
           <ArrowKey className={cn(styles.right)} />
         </div>
-        <h2 className={styles.title}>Controls</h2>
+        <h2 className={cn(styles.title, "text-2xl")}>Controls</h2>
       </div>
 
       <IconButton
         onClick={toggleSound}
         className={styles.speaker}
-        title="Speaker Button"
         Icon={sound ? Speaker : SpeakerMute}
+        aria-label="Toggle sound"
       />
     </Container>
   );

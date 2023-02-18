@@ -11,7 +11,7 @@
 .title {
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: 1rem;
+  margin-left: var(--space-4);
 }
 
 .up {
@@ -39,7 +39,7 @@
   grid-template-areas:
     ". up ."
     "left down right";
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 
 .up,
