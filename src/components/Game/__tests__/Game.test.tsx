@@ -22,10 +22,16 @@ function insertTile(
   tiles[row][col] = value;
 }
 
+//#region Game Setup
 test("Game automatically focuses on the board", () => {
   render(<Game rows={3} cols={3} />);
 
   expect(screen.getByLabelText("2048 game board")).toHaveFocus();
+});
+
+test("Should load initial state from local storage", () => {
+  render(<Game rows={3} cols={3} />);
+  expect(localStorage.getItem).toBeCalled();
 });
 
 test("The game initiates with a single tile placed randomly", () => {
@@ -42,6 +48,18 @@ test("A new tile is generated when the user makes a move", async () => {
   await user.keyboard("[ArrowUp][ArrowDown][ArrowLeft][ArrowRight]");
   // 4 moves + initial random tile
   expect(utils.insertRandomTile).toHaveBeenCalledTimes(5);
+});
+//#endregion
+
+//#region Movement
+test("Should persist game state when the user makes a move", async () => {
+  const user = userEvent.setup();
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowUp]");
+
+  expect(localStorage.setItem).toBeCalled();
 });
 
 test("Moving a tile right with no obstacles ends at the right edge of the screen", async () => {
@@ -103,7 +121,9 @@ test("Moving a tile up with no obstacles ends at the upper edge of the screen", 
   expect(screen.queryByTestId("2,0")).toBe(null);
   expect(screen.getByTestId("0,0")).toHaveTextContent(/^2/);
 });
+//#endregion
 
+//#region Merging
 test("Should merge tile right when ArrowRight is pressed", async () => {
   const user = userEvent.setup();
   mockinsertRandomTile.mockImplementationOnce((tiles) => {
@@ -159,3 +179,4 @@ test("Should merge tile up when ArrowUp is pressed", async () => {
 
   expect(screen.getByTestId("0,2")).toHaveTextContent(/^4/);
 });
+//#endregion

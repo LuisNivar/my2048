@@ -1,5 +1,5 @@
 import cn from "classnames";
-import { useReducer } from "react";
+import { useDeferredValue, useEffect, useReducer } from "react";
 import { useSwipeable } from "react-swipeable";
 import useAutoFocus from "../../hooks/useAutoFocus";
 import mergeRefs from "../../utils/mergeRefs";
@@ -7,48 +7,41 @@ import Board from "../Board";
 import MenuSection from "../MenuSection";
 import RetryGame from "../RetryGame";
 import ScoreBoard from "../ScoreBoard";
-import { Controls, KEY_MAP } from "./constants";
+import { KEY_MAP, STATE_KEY } from "./constants";
 import styles from "./index.module.css";
 import move from "./movement";
 import { createInitialState, GameReducer, GameState } from "./state";
+import { AllowedMovements } from "./movement";
 
 type GameProps = {
   rows: number;
   cols: number;
   className?: string;
-  score?: number;
-  bestScore?: number;
+};
+
+const initialState: GameState = {
+  tiles: [],
+  bestScore: 0,
+  score: 0,
+  hasGameEnded: false,
 };
 
 //#region Utilities
 function Game(props: GameProps) {
-  const { className, score, bestScore, rows, cols } = props;
-  const { ref: swipeRefs, ...touchEventHandlers } = useSwipeable({
-    onSwipedLeft: () => handleMove("ArrowLeft"),
-    onSwipedRight: () => handleMove("ArrowRight"),
-    onSwipedUp: () => handleMove("ArrowUp"),
-    onSwipedDown: () => handleMove("ArrowDown"),
-  });
+  const { className, rows, cols } = props;
 
   const autoFocusRef = useAutoFocus();
 
-  const initialState: GameState = {
-    dimensions: { rows, cols },
-    tiles: [],
-    bestScore: bestScore ?? 0,
-    score: score ?? 0,
-    hasGameEnded: false,
-  };
-
-  const [state, dispatch] = useReducer(
-    GameReducer,
-    initialState,
-    createInitialState
+  const [state, dispatch] = useReducer(GameReducer, initialState, () =>
+    createInitialState(initialState, rows, cols)
   );
 
-  const handleMove = (key: Controls) => {
+  // Persist game state to local storage
+  useSaveGame(state);
+
+  const executeMove = (direction: AllowedMovements) => {
     if (!state.hasGameEnded) {
-      const { tiles, score } = move(state.tiles, KEY_MAP[key]);
+      const { tiles, score } = move(state.tiles, direction);
 
       dispatch({
         type: "updated_tiles",
@@ -57,6 +50,20 @@ function Game(props: GameProps) {
       });
     }
   };
+
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (!(e.key in KEY_MAP)) {
+      return;
+    }
+    executeMove(KEY_MAP[e.key]);
+  };
+
+  const { ref: swipeRefs, ...touchEventHandlers } = useSwipeable({
+    onSwipedLeft: () => executeMove("left"),
+    onSwipedRight: () => executeMove("right"),
+    onSwipedUp: () => executeMove("up"),
+    onSwipedDown: () => executeMove("down"),
+  });
 
   return (
     <div className={cn(className, styles.game)}>
@@ -75,11 +82,19 @@ function Game(props: GameProps) {
         className={styles.board}
         tiles={state.tiles}
         aria-label="2048 game board"
-        onKeyUp={(e) => handleMove(e.key as Controls)}
+        onKeyUp={handleKeyUp}
         {...touchEventHandlers}
       />
     </div>
   );
+}
+
+function useSaveGame(state: GameState) {
+  // Using deferred value to avoid saving state on every render
+  const gameState = useDeferredValue(state);
+  useEffect(() => {
+    localStorage.setItem(STATE_KEY, JSON.stringify(gameState));
+  }, [gameState]);
 }
 
 export default Game;
