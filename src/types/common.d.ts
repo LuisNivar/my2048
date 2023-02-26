@@ -4,7 +4,9 @@ type Vector = {
   y: number;
 };
 
-type ITiles = {
+type ITile = {
   id: number;
   value: number;
 };
+
+type IGrid = Array<Array<ITile | null>>;
