@@ -6,7 +6,7 @@ import Cells from "./Cells";
 import Tiles from "./Tiles";
 
 export type BoardProps = ContainerProps & {
-  tiles: number[][];
+  tiles: IGrid;
 };
 
 const Board = React.forwardRef<HTMLDivElement | null, BoardProps>(
