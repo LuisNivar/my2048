@@ -1,9 +1,9 @@
-import { EMPTY_TILE, STATE_KEY } from "./constants";
+import { STATE_KEY } from "./constants";
 import { insertRandomTile, isGameOver } from "./utils";
 
 //#region Types
 export type GameState = {
-  tiles: number[][];
+  tiles: IGrid;
   score: number;
   bestScore: number;
   hasGameEnded?: boolean;
@@ -12,7 +12,7 @@ export type GameState = {
 export type Action =
   | {
       type: "updated_tiles";
-      tiles: number[][];
+      tiles: IGrid;
       score: number;
     }
   | {
@@ -70,9 +70,9 @@ function newGame(state: GameState, rows: number, cols: number): GameState {
 }
 
 function createInitialGrid(rows: number, cols: number) {
-  const grid = Array<number[]>(rows);
+  const grid: IGrid = Array(rows);
   for (let i = 0; i < grid.length; i++) {
-    grid[i] = Array<number>(cols).fill(EMPTY_TILE);
+    grid[i] = Array(cols);
   }
   insertRandomTile(grid);
 

@@ -1,7 +1,9 @@
+import React from "react";
+import { getNewId } from "../../Game/utils";
 import Tile from "../../Tile";
 
 type TilesProps = {
-  tiles: number[][];
+  tiles: IGrid;
   cellsPosition: Vector[];
 };
 
@@ -18,14 +20,17 @@ function Tiles(props: TilesProps) {
       {cellsPosition.map((position, index) => {
         const row = Math.floor(index / rows);
         const col = index % columns;
+        const tile = tiles[row][col];
         return (
-          <Tile
-            key={index}
-            value={tiles[row][col]}
-            x={position.x - offsetX}
-            y={position.y - offSetY}
-            data-testid={`${row},${col}`}
-          />
+          tile && (
+            <Tile
+              key={tile.id}
+              value={tile.value}
+              x={position.x - offsetX}
+              y={position.y - offSetY}
+              data-testid={`${row},${col}`}
+            />
+          )
         );
       })}
     </>
