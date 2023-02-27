@@ -1,0 +1,37 @@
+/* Reset CSS styles */
+@import-normalize;
+@import url("https://fonts.googleapis.com/css2?family=Blinker:wght@400;600;700&display=swap");
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+/* Default styles*/
+:root {
+  --primary: #5eb1bf;
+  --primary-light: #ffffff;
+  --secondary-light: #ffffff99;
+  --secondary: #efcb68;
+  --bg-body: #042a2b;
+
+  font-family: "Blinker", sans-serif;
+  color: var(--primary);
+
+  --tile-size: 4rem;
+}
+
+/** Resets not covered by normalize*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin-top: 0;
+}
+
+body {
+  margin: 0;
+}

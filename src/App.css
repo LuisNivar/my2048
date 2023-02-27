@@ -1,0 +1,48 @@
+.app {
+  /* background: var(--bg-body); */
+  background: radial-gradient(hsl(198, 69%, 23%), var(--bg-body), #175547);
+  background-size: 300% 300%;
+  animation: gradient 15s ease infinite;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.layout {
+  background-color: var(--bg-body);
+  border-radius: 1rem;
+  display: grid;
+  width: fit-content;
+  grid-template-areas:
+    "game"
+    "instruction";
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.game {
+  grid-area: game;
+}
+
+.instruction {
+  grid-area: instruction;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 50% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media screen and (prefers-reduced-motion) {
+  .app {
+    animation: none;
+  }
+}

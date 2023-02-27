@@ -1,0 +1,12 @@
+.roundSquare {
+  /*width: fit-content;*/
+  display: flex;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
+  padding: 1rem;
+  align-items: center;
+}
+
+.roundSquare:focus {
+  outline: none;
+}
