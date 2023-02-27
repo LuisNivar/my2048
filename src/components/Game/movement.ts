@@ -62,13 +62,13 @@ function updateTilePosition(
 ) {
   const { next, current } = obstaclePosition;
 
-  const nextTile = getNextTile(tiles, next); //isInbounds(tiles, next.x, next.y) && tiles[next.y][next.x];
+  const nextTile = getNextTile(tiles, next);
 
   // If the next tile is the same as the current tile, merge them
-  const canMerged = nextTile && nextTile.value === currentTile?.value;
+  const canMerge = nextTile && nextTile.value === currentTile?.value;
 
-  if (canMerged) {
-    return mergedTile(nextTile, currentTile);
+  if (canMerge) {
+    return mergeTile(nextTile, currentTile);
   }
 
   // There are no matching tiles, just move it to its new position
@@ -83,11 +83,33 @@ function getNextTile(tiles: IGrid, next: Vector) {
   return null;
 }
 
-function mergedTile(nextTile: ITile, currentTile: ITile) {
+function mergeTile(nextTile: ITile, currentTile: ITile) {
   const newValue = nextTile.value * 2;
   nextTile.value = newValue;
   nextTile.id = currentTile.id;
   return newValue;
+}
+
+function getTraversals(dir: AllowedMovements, cols: number, rows: number) {
+  let move = {
+    rowIncrement: 1,
+    colIncrement: 1,
+    startRow: 0,
+    startCol: 0,
+  };
+
+  // We want to look ahead where we are going, so that means that
+  // If we are moving towards the right we need to to start from the right,
+  // Likewise if we are moving down, we need to start from the bottom
+  if (dir === "right") {
+    move.startCol = cols - 1;
+    move.colIncrement = -1;
+  } else if (dir === "down") {
+    move.startRow = rows - 1;
+    move.rowIncrement = -1;
+  }
+
+  return move;
 }
 //#endregion
 
@@ -98,21 +120,11 @@ function move(tiles: IGrid, dir: AllowedMovements) {
 
   let score = 0;
 
-  let rowIncrement = 1;
-  let colIncrement = 1;
-  let startRow = 0;
-  let startCol = 0;
-
-  // We want to look ahead where we are going, so that means that
-  // If we are moving towards the right we need to to start from the right,
-  // Likewise if we are moving down, we need to start from the bottom
-  if (dir === "right") {
-    startCol = cols - 1;
-    colIncrement = -1;
-  } else if (dir === "down") {
-    startRow = rows - 1;
-    rowIncrement = -1;
-  }
+  const { startRow, startCol, rowIncrement, colIncrement } = getTraversals(
+    dir,
+    cols,
+    rows
+  );
 
   for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
     for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
@@ -122,7 +134,6 @@ function move(tiles: IGrid, dir: AllowedMovements) {
       const obstaclePosition = findNextObstacle(tiles, y, x, dir);
       // Empty current tile since we are going to merge it or move it somewhere else
       tiles[y][x] = null;
-
       score = updateTilePosition(tiles, tile, obstaclePosition);
     }
   }
