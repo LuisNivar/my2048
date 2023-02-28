@@ -1,10 +1,10 @@
 import { AllowedMovements } from "./movement";
 
-export type Controls = "ArrowUp" | "ArrowDown" | "ArrowLeft" | "ArrowRight";
-
 export const EMPTY_TILE = 0;
 
-export const KEY_MAP: Record<Controls, AllowedMovements> = {
+export const STATE_KEY = "game_state";
+
+export const KEY_MAP: Record<string, AllowedMovements> = {
   ArrowUp: "up",
   ArrowDown: "down",
   ArrowLeft: "left",

@@ -1,9 +1,7 @@
 import { EMPTY_TILE } from "./constants";
-import { insertRandomTile } from "./utils";
+import { getNewId, insertRandomTile } from "./utils";
 
 //#region Typings
-type Vector = { x: number; y: number };
-
 type ObstaclePosition = {
   current: Vector;
   next: Vector;
@@ -20,15 +18,20 @@ const Directions = {
 export type AllowedMovements = keyof typeof Directions;
 
 //#region Helpers
-function isInbounds(tiles: number[][], col: number, row: number) {
+function isInbounds(tiles: IGrid, col: number, row: number) {
   const rows = tiles.length;
   const cols = tiles[0].length ?? 0;
 
   return col >= 0 && col < cols && row >= 0 && row < rows;
 }
 
+// TODO: START MENU
+// start screen / Clasic | Custom
+// number of rows, columns and base
+// Animation when merging, spawning, sliding
+
 function findNextObstacle(
-  tiles: number[][],
+  tiles: IGrid,
   row: number,
   col: number,
   dir: AllowedMovements
@@ -43,7 +46,6 @@ function findNextObstacle(
     [previousX, previousY] = [nextX, nextY];
     [nextX, nextY] = [nextX + dx, nextY + dy];
   }
-
   return {
     current: { x: previousX, y: previousY },
     next: { x: nextX, y: nextY },
@@ -54,51 +56,75 @@ function findNextObstacle(
  * @returns Resulting score after moving the tiles
  */
 function updateTilePosition(
-  tiles: number[][],
-  currentValue: number,
+  tiles: IGrid,
+  currentTile: ITile,
   obstaclePosition: ObstaclePosition
 ) {
   const { next, current } = obstaclePosition;
 
-  // Can this tile be merged?
-  if (
-    isInbounds(tiles, next.x, next.y) &&
-    tiles[next.y][next.x] === currentValue
-  ) {
-    const newValue = tiles[next.y][next.x] * 2;
-    tiles[next.y][next.x] = newValue;
+  const nextTile = getNextTile(tiles, next);
 
-    return newValue;
+  // If the next tile is the same as the current tile, merge them
+  const canMerge = nextTile && nextTile.value === currentTile?.value;
+
+  if (canMerge) {
+    return mergeTile(nextTile, currentTile);
   }
 
   // There are no matching tiles, just move it to its new position
-  tiles[current.y][current.x] = currentValue;
+  tiles[current.y][current.x] = currentTile;
   return 0;
+}
+
+function getNextTile(tiles: IGrid, next: Vector) {
+  if (isInbounds(tiles, next.x, next.y)) {
+    return tiles[next.y][next.x];
+  }
+  return null;
+}
+
+function mergeTile(nextTile: ITile, currentTile: ITile) {
+  const newValue = nextTile.value * 2;
+  nextTile.value = newValue;
+  nextTile.id = currentTile.id;
+  return newValue;
+}
+
+function getTraversals(dir: AllowedMovements, cols: number, rows: number) {
+  let move = {
+    rowIncrement: 1,
+    colIncrement: 1,
+    startRow: 0,
+    startCol: 0,
+  };
+
+  // We want to look ahead where we are going, so that means that
+  // If we are moving towards the right we need to to start from the right,
+  // Likewise if we are moving down, we need to start from the bottom
+  if (dir === "right") {
+    move.startCol = cols - 1;
+    move.colIncrement = -1;
+  } else if (dir === "down") {
+    move.startRow = rows - 1;
+    move.rowIncrement = -1;
+  }
+
+  return move;
 }
 //#endregion
 
-function move(tiles: number[][], dir: AllowedMovements) {
+function move(tiles: IGrid, dir: AllowedMovements) {
   tiles = [...tiles];
   const rows = tiles.length;
   const cols = tiles[0].length;
 
   let score = 0;
 
-  let rowIncrement = 1;
-  let colIncrement = 1;
-  let startRow = 0;
-  let startCol = 0;
-
-  // We want to look ahead where we are going, so that means that
-  // If we are moving towards the right we need to to start from the right,
-  // Likewise if we are moving down, we need to start from the bottom
-  if (dir === "right") {
-    startCol = cols - 1;
-    colIncrement = -1;
-  } else if (dir === "down") {
-    startRow = rows - 1;
-    rowIncrement = -1;
-  }
+  const { startRow, startCol, rowIncrement, colIncrement } = getTraversals(
+    dir,
+    cols,
+    rows
+  );
 
   for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
     for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
@@ -107,8 +133,7 @@ function move(tiles: number[][], dir: AllowedMovements) {
 
       const obstaclePosition = findNextObstacle(tiles, y, x, dir);
       // Empty current tile since we are going to merge it or move it somewhere else
-      tiles[y][x] = EMPTY_TILE;
-
+      tiles[y][x] = null;
       score = updateTilePosition(tiles, tile, obstaclePosition);
     }
   }

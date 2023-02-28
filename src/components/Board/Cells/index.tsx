@@ -6,7 +6,7 @@ type CellProps = {
   columns: number;
 };
 
-const Cells = forwardRef<Point[], CellProps>(function Cells(props, ref) {
+const Cells = forwardRef<Vector[], CellProps>(function Cells(props, ref) {
   const { rows, columns } = props;
   const cellsRef = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -52,7 +52,7 @@ function getElementPosition(element: HTMLElement | null) {
   }
 
   const rect = element.getBoundingClientRect();
-  const position: Point = {
+  const position: Vector = {
     x: Math.round(rect.x),
     y: Math.round(rect.y),
   };
