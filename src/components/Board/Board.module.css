@@ -1,3 +1,10 @@
 .board {
+  --tile-size: 4rem;
   align-items: flex-start;
+}
+
+@media screen and (min-width: 1280px) {
+  .board {
+    --tile-size: 4.5rem;
+  }
 }

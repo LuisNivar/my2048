@@ -1,5 +1,4 @@
 .game {
-  --tile-size: 4rem;
   display: grid;
   grid-template-areas:
     "menu score"

@@ -44,6 +44,12 @@ body {
   margin: 0;
 }
 
+@media screen and (min-width: 1280px) {
+  :root {
+    font-size: 1.1rem;
+  }
+}
+
 /* Typography */
 .text-xs {
   font-size: 0.75rem;
