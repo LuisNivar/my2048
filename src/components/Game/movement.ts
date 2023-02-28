@@ -1,5 +1,4 @@
-import { EMPTY_TILE } from "./constants";
-import { getNewId, insertRandomTile } from "./utils";
+import { insertRandomTile } from "./utils";
 
 //#region Typings
 type ObstaclePosition = {

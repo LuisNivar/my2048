@@ -1,5 +1,3 @@
-import React from "react";
-import { getNewId } from "../../Game/utils";
 import Tile from "../../Tile";
 
 type TilesProps = {

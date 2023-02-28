@@ -1,5 +1,3 @@
-import { EMPTY_TILE } from "./constants";
-
 // incremental id for the tiles's key
 let idMaster = -1;
 
