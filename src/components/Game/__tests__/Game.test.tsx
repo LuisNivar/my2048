@@ -11,7 +11,7 @@ const mockinsertRandomTile = jest
 // Utility so that we can swap out the implementation details
 // when the representation of a Tile changes.
 function insertTile(
-  tiles: unknown[][],
+  tiles: IGrid,
   tileValue: {
     row: number;
     col: number;
@@ -19,7 +19,10 @@ function insertTile(
   }
 ) {
   const { row, col, value } = tileValue;
-  tiles[row][col] = value;
+  tiles[row][col] = {
+    id: utils.getNewId(),
+    value: value,
+  };
 }
 
 //#region Game Setup
