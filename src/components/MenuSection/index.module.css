@@ -1,19 +1,13 @@
 .container {
-  display: grid;
-  grid-template-areas:
-    "title title"
-    "menu reload";
+  flex-direction: column;
+  justify-content: center;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: var(--space-3);
 }
 
 .title {
-  grid-area: title;
-}
-
-.menu {
-  grid-area: menu;
-  margin-right: 0.5rem;
-}
-
-.reload {
-  grid-area: reload;
+  margin-bottom: var(--space-3);
 }

@@ -4,7 +4,7 @@
   border: none;
   border-radius: 1rem;
   text-decoration: none;
-  padding: 0.75rem;
+  padding: var(--space-4);
   line-height: 0;
   transition: transform 100ms ease-out;
 }
@@ -15,6 +15,6 @@
 }
 
 .icon {
-  width: 2rem;
+  width: 24px;
   height: auto;
 }

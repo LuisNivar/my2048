@@ -9,9 +9,8 @@ import RetryGame from "../RetryGame";
 import ScoreBoard from "../ScoreBoard";
 import { KEY_MAP, STATE_KEY } from "./constants";
 import styles from "./index.module.css";
-import move from "./movement";
+import move, { AllowedMovements } from "./movement";
 import { createInitialState, GameReducer, GameState } from "./state";
-import { AllowedMovements } from "./movement";
 
 type GameProps = {
   rows: number;
@@ -63,6 +62,7 @@ function Game(props: GameProps) {
     onSwipedRight: () => executeMove("right"),
     onSwipedUp: () => executeMove("up"),
     onSwipedDown: () => executeMove("down"),
+    preventScrollOnSwipe: true,
   });
 
   return (

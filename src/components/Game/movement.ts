@@ -1,12 +1,4 @@
-import { EMPTY_TILE } from "./constants";
-import { getNewId, insertRandomTile } from "./utils";
-
-//#region Typings
-type ObstaclePosition = {
-  current: Vector;
-  next: Vector;
-};
-//#endregion
+import { insertRandomTile } from "./utils";
 
 const Directions = {
   right: [1, 0],
@@ -15,82 +7,79 @@ const Directions = {
   up: [0, -1],
 } as const;
 
+//#region Typings
 export type AllowedMovements = keyof typeof Directions;
 
-//#region Helpers
-function isInbounds(tiles: IGrid, col: number, row: number) {
-  const rows = tiles.length;
-  const cols = tiles[0].length ?? 0;
+type MovementResult = {
+  /** Position of the next empty tile */
+  emptySpot: Vector;
+  /** Position of the next non-empty tile*/
+  obstaclePosition?: Vector;
+};
 
-  return col >= 0 && col < cols && row >= 0 && row < rows;
-}
-
-// TODO: START MENU
-// start screen / Clasic | Custom
-// number of rows, columns and base
-// Animation when merging, spawning, sliding
-
-function findNextObstacle(
-  tiles: IGrid,
+type GridIteratorCallback = (
   row: number,
   col: number,
-  dir: AllowedMovements
-): ObstaclePosition {
-  const [dx, dy] = Directions[dir];
+  tile: ITile | null
+) => void;
+//#endregion
 
-  // Find the farthest empty location
-  let [previousX, previousY] = [col, row];
-  let [nextX, nextY] = [previousX + dx, previousY + dy];
-  // Keep looking until an obstacle is found
-  while (isInbounds(tiles, nextX, nextY) && !tiles[nextY][nextX]) {
-    [previousX, previousY] = [nextX, nextY];
-    [nextX, nextY] = [nextX + dx, nextY + dy];
-  }
-  return {
-    current: { x: previousX, y: previousY },
-    next: { x: nextX, y: nextY },
-  };
+function move(tiles: IGrid, direction: AllowedMovements) {
+  tiles = [...tiles];
+  let score = 0;
+
+  forEachTile(tiles, direction, (row, col) => {
+    const tilePosition = { x: col, y: row };
+    score = moveToDirection(tiles, tilePosition, direction);
+  });
+
+  // Add a new tile every time the player makes a move
+  insertRandomTile(tiles);
+
+  return { tiles, score };
 }
 
-/**
- * @returns Resulting score after moving the tiles
- */
-function updateTilePosition(
+function forEachTile(
   tiles: IGrid,
-  currentTile: ITile,
-  obstaclePosition: ObstaclePosition
+  dir: AllowedMovements,
+  fn: GridIteratorCallback
 ) {
-  const { next, current } = obstaclePosition;
+  const rows = tiles.length;
+  const cols = tiles[0].length;
 
-  const nextTile = getNextTile(tiles, next);
+  const { startRow, startCol, rowIncrement, colIncrement } =
+    getLoopInitializers(rows, cols, dir);
 
-  // If the next tile is the same as the current tile, merge them
-  const canMerge = nextTile && nextTile.value === currentTile?.value;
-
-  if (canMerge) {
-    return mergeTile(nextTile, currentTile);
+  for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
+    for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
+      const tile = tiles[y][x];
+      fn(y, x, tile);
+    }
   }
-
-  // There are no matching tiles, just move it to its new position
-  tiles[current.y][current.x] = currentTile;
-  return 0;
 }
 
-function getNextTile(tiles: IGrid, next: Vector) {
-  if (isInbounds(tiles, next.x, next.y)) {
-    return tiles[next.y][next.x];
+function moveToDirection(
+  tiles: IGrid,
+  tilePosition: Vector,
+  direction: AllowedMovements
+) {
+  const { y: row, x: col } = tilePosition;
+  const tile = tiles[row][col];
+  if (!tile) {
+    return 0;
   }
-  return null;
+  const obstaclePosition = findNextObstacle(tiles, tilePosition, direction);
+  // Empty current tile since we are going to merge it or move it somewhere else
+  tiles[row][col] = null;
+
+  return updateTilePosition(tiles, tile, obstaclePosition);
 }
 
-function mergeTile(nextTile: ITile, currentTile: ITile) {
-  const newValue = nextTile.value * 2;
-  nextTile.value = newValue;
-  nextTile.id = currentTile.id;
-  return newValue;
-}
-
-function getTraversals(dir: AllowedMovements, cols: number, rows: number) {
+function getLoopInitializers(
+  rows: number,
+  cols: number,
+  dir: AllowedMovements
+) {
   let move = {
     rowIncrement: 1,
     colIncrement: 1,
@@ -111,37 +100,62 @@ function getTraversals(dir: AllowedMovements, cols: number, rows: number) {
 
   return move;
 }
-//#endregion
 
-function move(tiles: IGrid, dir: AllowedMovements) {
-  tiles = [...tiles];
+function findNextObstacle(
+  tiles: IGrid,
+  tilePosition: Vector,
+  dir: AllowedMovements
+): MovementResult {
+  const [dx, dy] = Directions[dir];
+
+  let previous;
+  let next = tilePosition;
+  // Find the farthest empty location
+  do {
+    previous = next;
+    next = { x: next.x + dx, y: next.y + dy };
+  } while (isInbounds(tiles, next) && isEmptyTile(tiles, next));
+
+  return {
+    emptySpot: previous,
+    obstaclePosition: isInbounds(tiles, next) ? next : undefined,
+  };
+}
+
+function isInbounds(tiles: IGrid, position: Vector) {
   const rows = tiles.length;
-  const cols = tiles[0].length;
+  const cols = tiles[0].length ?? 0;
+  const { x: col, y: row } = position;
 
-  let score = 0;
+  return col >= 0 && col < cols && row >= 0 && row < rows;
+}
 
-  const { startRow, startCol, rowIncrement, colIncrement } = getTraversals(
-    dir,
-    cols,
-    rows
-  );
+function isEmptyTile(tiles: IGrid, position: Vector) {
+  return !tiles[position.y][position.x];
+}
 
-  for (let y = startRow; y >= 0 && y < rows; y += rowIncrement) {
-    for (let x = startCol; x >= 0 && x < cols; x += colIncrement) {
-      const tile = tiles[y][x];
-      if (!tile) continue;
+/**
+ * Updates the tile position based on the movement result
+ *
+ * @returns Score produced by the movement
+ */
+function updateTilePosition(
+  tiles: IGrid,
+  currentTile: ITile,
+  movementResult: MovementResult
+) {
+  const { obstaclePosition: next, emptySpot } = movementResult;
+  const obstacle = next && tiles[next.y][next.x];
 
-      const obstaclePosition = findNextObstacle(tiles, y, x, dir);
-      // Empty current tile since we are going to merge it or move it somewhere else
-      tiles[y][x] = null;
-      score = updateTilePosition(tiles, tile, obstaclePosition);
-    }
+  // Current tile has the same value as the next tile, so we merge them
+  if (obstacle?.value === currentTile.value) {
+    obstacle.value *= 2;
+    return obstacle.value;
   }
 
-  // Add a new tile every time the player makes a move
-  insertRandomTile(tiles);
-
-  return { tiles, score };
+  // Otherwise we just move the current tile to the empty spot
+  tiles[emptySpot.y][emptySpot.x] = currentTile;
+  return 0;
 }
 
 export default move;

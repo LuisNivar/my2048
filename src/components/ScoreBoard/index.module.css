@@ -1,31 +1,28 @@
 .scoreBoard {
-  display: inline-flex;
+  display: flex;
   flex-direction: column;
   vertical-align: middle;
-  width: fit-content;
-  height: fit-content;
+  gap: 0.5rem;
 }
 
 .score {
   color: var(--secondary-light);
-  font-size: 1.5em;
-  line-height: 0;
-  margin-left: 0.75rem;
+  font-size: 1.5rem;
 }
 
 .title {
   color: var(--primary);
   font-weight: bold;
-  margin-left: 0;
-  font-size: 1.5em;
-  line-height: 0;
+  font-size: 1.25rem;
 }
 
-.padding {
+.score,
+.title {
+  margin: 0;
+}
+
+.container {
+  flex: 1;
+  flex-direction: column;
   padding: 0.5rem 1rem;
-}
-
-.marginBottom {
-  margin-bottom: 0.5rem;
-  padding: 0.25rem 1rem;
 }
