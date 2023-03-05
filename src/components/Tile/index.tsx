@@ -15,12 +15,81 @@ export type TileProps = {
   "data-testid"?: string;
 };
 
-function exponent(value: number) {
-  return Math.floor(Math.log(value) / Math.log(BASE));
+function Tile({ value, x, y, ...rest }: TileProps) {
+  const { containerRef, textRef, containerStyles } = useDynamicFontSize(
+    TILE_FONT_SIZE,
+    value
+  );
+
+  if (value === 0) {
+    // Empty tile
+    return <></>;
+  }
+
+  const isSmallNumber = getNumberOfDigits(value) <= MAX_DIGITS;
+
+  return (
+    <div
+      {...rest}
+      ref={containerRef}
+      className={styles.tile}
+      style={{
+        ...containerStyles,
+        background: getCSSColor(value),
+        "--x": x + "px",
+        "--y": y + "px",
+      }}
+    >
+      <TextStroke ref={textRef}>
+        {isSmallNumber ? (
+          value
+        ) : (
+          // Display in scientific notation
+          <>
+            {BASE}
+            <sup>{getExponent(value, BASE)}</sup>
+          </>
+        )}
+      </TextStroke>
+    </div>
+  );
+}
+
+function useDynamicFontSize(initialFontSize: number, tileValue: number) {
+  const [fontSize, setFontSize] = useState(initialFontSize);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    if (
+      !containerRef.current ||
+      !textRef.current ||
+      process.env.NODE_ENV === "test" // Skip testing font resizing
+    ) {
+      return;
+    }
+    const container = containerRef.current;
+    const text = textRef.current;
+
+    const tileWidth = container.clientWidth - TILE_PADDING;
+    const textWidth = text.clientWidth;
+
+    if (tileWidth < textWidth) {
+      setFontSize(fontSize - 1);
+    }
+  }, [fontSize, tileValue]);
+
+  return {
+    containerRef,
+    textRef,
+    containerStyles: {
+      fontSize: fontSize + "px",
+    },
+  };
 }
 
 /**
- * Return HSL string given a value
+ *  Get the CSS color for the tile based on the value.
  */
 function getCSSColor(value: number) {
   const MAX_HUE = 360;
@@ -28,7 +97,7 @@ function getCSSColor(value: number) {
   // So we compute the initial HUE accordingly so that colors
   // are distributed evenly.
   const INITIAL_HUE = Math.floor(360 / 11);
-  const multiplier = exponent(value);
+  const multiplier = getExponent(value, BASE);
   const hue = multiplier * INITIAL_HUE;
 
   if (hue >= MAX_HUE) {
@@ -38,68 +107,12 @@ function getCSSColor(value: number) {
   return `hsl(${hue}, 81%, 67%)`;
 }
 
-function Tile({ value, x, y, ...rest }: TileProps) {
-  const [fontSize, setFontSize] = useState(TILE_FONT_SIZE);
+function getExponent(value: number, base: number) {
+  return Math.floor(Math.log(value) / Math.log(base));
+}
 
-  const tileRef = useRef<HTMLDivElement>(null);
-  const textRef = useRef<HTMLDivElement>(null);
-
-  const numOfDigits = Math.floor(Math.log10(value) + 1);
-  const isSmallNumber = numOfDigits <= MAX_DIGITS;
-
-  const style = {
-    background: getCSSColor(value),
-    fontSize: fontSize + "px",
-    "--x": x + "px",
-    "--y": y + "px",
-  };
-
-  // Reset font size when value changes
-  useLayoutEffect(() => {
-    setFontSize(TILE_FONT_SIZE);
-  }, [value]);
-
-  // Dynamically resize the font size to fit inside the tile's width
-  useLayoutEffect(() => {
-    if (
-      !tileRef.current ||
-      !textRef.current ||
-      process.env.NODE_ENV === "test" // Skip testing font resizing
-    ) {
-      return;
-    }
-
-    const tileDiv = tileRef.current;
-    const textDiv = textRef.current;
-
-    const tileWidth = tileDiv.clientWidth - TILE_PADDING;
-    const textWidth = textDiv.clientWidth;
-
-    if (tileWidth < textWidth) {
-      setFontSize(fontSize - 1);
-    }
-  }, [value, fontSize]);
-
-  if (value === 0) {
-    // Empty tile
-    return <></>;
-  }
-
-  return (
-    <div className={styles.tile} style={style} ref={tileRef} {...rest}>
-      <TextStroke ref={textRef}>
-        {isSmallNumber ? (
-          value
-        ) : (
-          // Display in scientific notation
-          <>
-            {BASE}
-            <sup>{exponent(value)}</sup>
-          </>
-        )}
-      </TextStroke>
-    </div>
-  );
+function getNumberOfDigits(value: number) {
+  return Math.floor(Math.log10(value) + 1);
 }
 
 export default Tile;
