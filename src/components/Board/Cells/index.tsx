@@ -1,4 +1,9 @@
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import {
+  forwardRef,
+  MutableRefObject,
+  useImperativeHandle,
+  useRef,
+} from "react";
 import styles from "./Cells.module.css";
 
 type CellProps = {
@@ -6,23 +11,37 @@ type CellProps = {
   columns: number;
 };
 
+type CellContainers = Array<HTMLDivElement | null>;
+
 const Cells = forwardRef<Vector[], CellProps>(function Cells(props, ref) {
   const { rows, columns } = props;
-  const cellsRef = useRef<Array<HTMLDivElement | null>>([]);
+  const cellsRef = useRef<CellContainers>([]);
 
   useImperativeHandle(
     ref,
     () => {
-      // Update Refs size when the number of tiles changes
-      const cells = cellsRef.current.slice(0, rows * columns);
-      cellsRef.current = cells;
-
-      // Get top-left location of every cell
-      return cells.map((element) => getElementPosition(element));
+      // user can change the number of rows and columns in the board settings
+      updateCellsRefSize(cellsRef, rows, columns);
+      return getCellsPosition(cellsRef);
     },
     [rows, columns]
   );
 
+  return (
+    <div
+      className={styles.grid}
+      style={{ "--columns": columns, "--rows": rows }}
+    >
+      {renderCells(rows, columns, cellsRef)}
+    </div>
+  );
+});
+
+function renderCells(
+  rows: number,
+  columns: number,
+  cellsRef: React.MutableRefObject<CellContainers>
+) {
   const cells = [];
   for (let i = 0; i < rows * columns; i++) {
     cells.push(
@@ -35,28 +54,24 @@ const Cells = forwardRef<Vector[], CellProps>(function Cells(props, ref) {
       />
     );
   }
+  return cells;
+}
 
-  return (
-    <div
-      className={styles.grid}
-      style={{ "--columns": columns, "--rows": rows }}
-    >
-      {cells}
-    </div>
-  );
-});
+function updateCellsRefSize(
+  cellsRef: MutableRefObject<CellContainers>,
+  rows: number,
+  columns: number
+) {
+  cellsRef.current = cellsRef.current.slice(0, rows * columns);
+}
 
-function getElementPosition(element: HTMLElement | null) {
-  if (!element) {
-    return { x: 0, y: 0 };
-  }
-
-  const rect = element.getBoundingClientRect();
-  const position: Vector = {
-    x: Math.round(rect.x),
-    y: Math.round(rect.y),
-  };
-  return position;
+function getCellsPosition(cellsRef: MutableRefObject<CellContainers>) {
+  return cellsRef.current.map((element) => {
+    if (!element) {
+      return { x: 0, y: 0 };
+    }
+    return element.getBoundingClientRect();
+  });
 }
 
 export default Cells;
