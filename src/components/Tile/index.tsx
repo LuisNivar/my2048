@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import TextStroke from "./TextStroke";
+import { useSpring, animated } from "@react-spring/web";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
@@ -20,6 +21,18 @@ function Tile({ value, x, y, ...rest }: TileProps) {
     TILE_FONT_SIZE,
     value
   );
+  const props = useSpring({
+    from: {
+      scale: 0,
+      background: "white",
+    },
+    to: {
+      scale: 1,
+      x,
+      y,
+      background: getCSSColor(value),
+    },
+  });
 
   if (value === 0) {
     // Empty tile
@@ -29,15 +42,13 @@ function Tile({ value, x, y, ...rest }: TileProps) {
   const isSmallNumber = getNumberOfDigits(value) <= MAX_DIGITS;
 
   return (
-    <div
+    <animated.div
       {...rest}
       ref={containerRef}
       className={styles.tile}
       style={{
         ...containerStyles,
-        background: getCSSColor(value),
-        "--x": x + "px",
-        "--y": y + "px",
+        ...props,
       }}
     >
       <TextStroke ref={textRef}>
@@ -51,7 +62,7 @@ function Tile({ value, x, y, ...rest }: TileProps) {
           </>
         )}
       </TextStroke>
-    </div>
+    </animated.div>
   );
 }
 
