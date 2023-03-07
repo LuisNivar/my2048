@@ -27,14 +27,24 @@ type GridIteratorCallback = (
 function move(tiles: IGrid, direction: AllowedMovements) {
   tiles = [...tiles];
   let score = 0;
+  let hasAnyTileMoved = false;
 
   forEachTile(tiles, direction, (row, col) => {
     const tilePosition = { x: col, y: row };
-    score = moveToDirection(tiles, tilePosition, direction);
+    const { hasMoved, score: points } = moveToDirection(
+      tiles,
+      tilePosition,
+      direction
+    );
+
+    score += points;
+    hasAnyTileMoved ||= hasMoved;
   });
 
-  // Add a new tile every time the player makes a move
-  insertRandomTile(tiles);
+  if (hasAnyTileMoved) {
+    // Only add a new tile if a valid move was made
+    insertRandomTile(tiles);
+  }
 
   return { tiles, score };
 }
@@ -63,16 +73,20 @@ function moveToDirection(
   tilePosition: Vector,
   direction: AllowedMovements
 ) {
-  const { y: row, x: col } = tilePosition;
-  const tile = tiles[row][col];
-  if (!tile) {
-    return 0;
-  }
-  const obstaclePosition = findNextObstacle(tiles, tilePosition, direction);
-  // Empty current tile since we are going to merge it or move it somewhere else
-  tiles[row][col] = null;
+  const { y, x } = tilePosition;
+  const tile = tiles[y][x];
+  let hasMoved = false;
+  let score = 0;
 
-  return updateTilePosition(tiles, tile, obstaclePosition);
+  if (!tile) {
+    return { hasMoved, score };
+  }
+  const result = findNextObstacle(tiles, tilePosition, direction);
+
+  score = updateTilePosition(tiles, tilePosition, result);
+  hasMoved = result.emptySpot.x !== x || result.emptySpot.y !== y || score > 0;
+
+  return { hasMoved, score };
 }
 
 function getLoopInitializers(
@@ -141,16 +155,21 @@ function isEmptyTile(tiles: IGrid, position: Vector) {
  */
 function updateTilePosition(
   tiles: IGrid,
-  currentTile: ITile,
+  tilePosition: Vector,
   movementResult: MovementResult
 ) {
   const { obstaclePosition: next, emptySpot } = movementResult;
-  const obstacle = next && tiles[next.y][next.x];
+  const { y, x } = tilePosition;
+  const currentTile = tiles[y][x];
+  const nextTile = next && tiles[next.y][next.x];
+
+  // Empty current tile since we are going to merge it or move it somewhere else
+  tiles[y][x] = null;
 
   // Current tile has the same value as the next tile, so we merge them
-  if (obstacle?.value === currentTile.value) {
-    obstacle.value *= 2;
-    return obstacle.value;
+  if (nextTile && currentTile && nextTile.value === currentTile.value) {
+    nextTile.value *= 2;
+    return nextTile.value;
   }
 
   // Otherwise we just move the current tile to the empty spot

@@ -43,8 +43,12 @@ test("The game initiates with a single tile placed randomly", () => {
   expect(utils.insertRandomTile).toHaveBeenCalledTimes(1);
 });
 
-test("A new tile is generated when the user makes a move", async () => {
+test("A new tile is generated when the user makes a valid move", async () => {
   const user = userEvent.setup();
+
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 2, col: 2, value: 2 });
+  });
 
   render(<Game rows={3} cols={3} />);
 
@@ -52,7 +56,33 @@ test("A new tile is generated when the user makes a move", async () => {
   // 4 moves + initial random tile
   expect(utils.insertRandomTile).toHaveBeenCalledTimes(5);
 });
+
+test("Should not generate a new tile if no movement is possible", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 0, col: 0, value: 2 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+
+  await user.keyboard("[ArrowLeft]");
+
+  expect(utils.insertRandomTile).toHaveBeenCalledTimes(1);
+});
 //#endregion
+
+test("Should generate a new tile after a merge", async () => {
+  const user = userEvent.setup();
+  mockinsertRandomTile.mockImplementationOnce((tiles) => {
+    insertTile(tiles, { row: 0, col: 0, value: 2 });
+    insertTile(tiles, { row: 0, col: 1, value: 2 });
+  });
+
+  render(<Game rows={3} cols={3} />);
+  await user.keyboard("[ArrowRight]");
+
+  expect(utils.insertRandomTile).toHaveBeenCalledTimes(2);
+});
 
 //#region Movement
 test("Should persist game state when the user makes a move", async () => {
