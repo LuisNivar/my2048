@@ -22,6 +22,8 @@ function insertTile(
   tiles[row][col] = {
     id: utils.getNewId(),
     value: value,
+    y: row,
+    x: col,
   };
 }
 

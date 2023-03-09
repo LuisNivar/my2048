@@ -1,7 +1,7 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import { animated, useSpring } from "@react-spring/web";
+import { useLayoutEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import TextStroke from "./TextStroke";
-import { useSpring, animated } from "@react-spring/web";
 
 const BASE = 2;
 const MAX_DIGITS = 6;
