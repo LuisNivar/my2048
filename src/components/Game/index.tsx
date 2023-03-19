@@ -4,11 +4,11 @@ import { useSwipeable } from "react-swipeable";
 import useAutoFocus from "../../hooks/useAutoFocus";
 import mergeRefs from "../../utils/mergeRefs";
 import Board from "../Board";
-import MenuSection from "../MenuSection";
-import GameOverScreen from "../GameOverScreen";
-import ScoreBoard from "../ScoreBoard";
+import MenuSection from "../Layout/MenuSection";
+import GameOver from "./GameOver";
+import Scoreboard from "../Layout/Scoreboard";
 import { KEY_MAP, STATE_KEY } from "./constants";
-import styles from "./index.module.css";
+import styles from "./Game.module.css";
 import move, { AllowedMovements } from "./movement";
 import { createInitialState, gameReducer, GameState } from "./state";
 
@@ -67,13 +67,13 @@ function Game(props: GameProps) {
 
   return (
     <div className={cn(className, styles.game)}>
-      <GameOverScreen
+      <GameOver
         show={state.hasGameEnded}
         className={styles.rety}
         gameDispatch={dispatch}
       />
       <MenuSection className={styles.menu} gameDispatch={dispatch} />
-      <ScoreBoard
+      <Scoreboard
         className={styles.scoreBoard}
         score={state.score}
         bestScore={state.bestScore}

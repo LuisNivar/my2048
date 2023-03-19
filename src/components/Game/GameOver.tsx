@@ -1,9 +1,9 @@
 import cn from "classnames";
 import { ReactComponent as ReloadIcon } from "../../assets/reload.svg";
 import Container from "../Container";
-import { Action as GameAction } from "../Game/state";
+import { Action as GameAction } from "./state";
 import IconButton from "../IconButton";
-import styles from "./index.module.css";
+import styles from "./GameOver.module.css";
 import { useSpring, animated } from "@react-spring/web";
 
 type RetryGameProps = {
@@ -12,7 +12,7 @@ type RetryGameProps = {
   gameDispatch: React.Dispatch<GameAction>;
 };
 
-function GameOverScreen({ className, gameDispatch, show }: RetryGameProps) {
+function GameOver({ className, gameDispatch, show }: RetryGameProps) {
   const animatedStyles = useTranslateDownAnimation(show);
 
   const handleReset = () => {
@@ -48,4 +48,4 @@ function useTranslateDownAnimation(show?: boolean) {
   return springs;
 }
 
-export default GameOverScreen;
+export default GameOver;
