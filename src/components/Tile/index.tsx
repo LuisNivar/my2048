@@ -3,10 +3,15 @@ import { useLayoutEffect, useRef, useState } from "react";
 import styles from "./index.module.css";
 import TextStroke from "./TextStroke";
 
+// Base of the number system
 const BASE = 2;
+// Number of digits to display before switching to scientific notation
 const MAX_DIGITS = 6;
+// Color of the tile when the value is too large
 const DARK_COLOR = "#151718";
+// Base font size for the tile
 const TILE_FONT_SIZE = 32;
+// Padding of the tile container
 const TILE_PADDING = 16;
 
 export type TileProps = {

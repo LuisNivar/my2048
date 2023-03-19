@@ -5,12 +5,12 @@ import useAutoFocus from "../../hooks/useAutoFocus";
 import mergeRefs from "../../utils/mergeRefs";
 import Board from "../Board";
 import MenuSection from "../MenuSection";
-import RetryGame from "../RetryGame";
+import GameOverScreen from "../GameOverScreen";
 import ScoreBoard from "../ScoreBoard";
 import { KEY_MAP, STATE_KEY } from "./constants";
 import styles from "./index.module.css";
 import move, { AllowedMovements } from "./movement";
-import { createInitialState, GameReducer, GameState } from "./state";
+import { createInitialState, gameReducer, GameState } from "./state";
 
 type GameProps = {
   rows: number;
@@ -31,7 +31,7 @@ function Game(props: GameProps) {
 
   const autoFocusRef = useAutoFocus();
 
-  const [state, dispatch] = useReducer(GameReducer, initialState, () =>
+  const [state, dispatch] = useReducer(gameReducer, initialState, () =>
     createInitialState(initialState, rows, cols)
   );
 
@@ -67,9 +67,11 @@ function Game(props: GameProps) {
 
   return (
     <div className={cn(className, styles.game)}>
-      {state.hasGameEnded && (
-        <RetryGame className={styles.rety} gameDispatch={dispatch} />
-      )}
+      <GameOverScreen
+        show={state.hasGameEnded}
+        className={styles.rety}
+        gameDispatch={dispatch}
+      />
       <MenuSection className={styles.menu} gameDispatch={dispatch} />
       <ScoreBoard
         className={styles.scoreBoard}
