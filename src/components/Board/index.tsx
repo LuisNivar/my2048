@@ -1,5 +1,5 @@
 import cn from "classnames";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import Container, { ContainerProps } from "../Container";
 import styles from "./Board.module.css";
 import Cells from "./Cells";
@@ -16,9 +16,9 @@ const Board = React.forwardRef<HTMLDivElement | null, BoardProps>(
     const rows = tiles.length;
     const columns = tiles[0].length ?? 0;
 
-    const cellsRef = useCallback((positions: Vector[]) => {
+    const handleCellsRendered = (positions: Vector[]) => {
       setCellsPosition(positions);
-    }, []);
+    };
 
     return (
       <Container
@@ -27,7 +27,7 @@ const Board = React.forwardRef<HTMLDivElement | null, BoardProps>(
         ref={containerRef}
         {...rest}
       >
-        <Cells rows={rows} columns={columns} ref={cellsRef} />
+        <Cells rows={rows} columns={columns} onRendered={handleCellsRendered} />
         <Tiles tiles={tiles} cellsPosition={cellsPosition} />
       </Container>
     );

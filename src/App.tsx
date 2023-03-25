@@ -1,7 +1,7 @@
 import styles from "./App.module.css";
 import Game from "./components/Game";
 import Instruction from "./components/Layout/Instructions";
-import TextStrokeFilter from "./components/Tile/TextStroke/TextStrokeFilter";
+import TextStrokeFilter from "./components/TextStroke/TextStrokeFilter";
 
 function App() {
   const rows = 4;
