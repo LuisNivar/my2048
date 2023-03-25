@@ -4,7 +4,7 @@ import { ReactComponent as ReloadIcon } from "../../assets/reload.svg";
 import Container from "../Container";
 import { Action as GameAction } from "../Game/state";
 import IconButton from "../IconButton";
-import styles from "./index.module.css";
+import styles from "./MenuSection.module.css";
 
 type menuSection = {
   className?: string;
