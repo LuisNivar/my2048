@@ -14,20 +14,21 @@ Elegant 2048 is a clone of the popular 2048 game built using React. It is a sing
 
 ## Play the Game
 
-You can play Elegant 2048 online at [https://your-username.github.io/elegant-2048/](https://your-username.github.io/elegant-2048/). 
+You can play Elegant 2048 online at [Elegant 2048](https://brianuribe6.github.io/my2048/). 
 
 ## Built With
 
 - React - A JavaScript library for building user interfaces.
 - react-swipeable - A simple component for adding swipe event listeners to elements.
+- react-spring - A react spring-based animations library
 
 ## Contributing
 
-Contributions are welcome! Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
+Contributions are welcome! Please read [CONTRIBUTING](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
 
