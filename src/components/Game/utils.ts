@@ -1,9 +1,29 @@
+import { STATE_KEY } from "./constants";
+import { GameState } from "./state";
+
 // incremental id for the tiles's key
-let idMaster = -1;
+let idMaster = getInitialTileId();
 
 export function getNewId() {
   idMaster++;
   return idMaster;
+}
+
+/**
+ * Initialize the idMaster with the last id of the previous game
+ * This prevents using a key that was already used on the previous game
+ */
+function getInitialTileId() {
+  const previousGameState = localStorage.getItem(STATE_KEY);
+  if (previousGameState) {
+    const { tiles }: GameState = JSON.parse(previousGameState);
+    const lastId = tiles
+      .flatMap((row) => row)
+      .reduce((maxId, tile) => Math.max(maxId, tile?.id ?? -1), -1);
+
+    return lastId;
+  }
+  return -1;
 }
 
 export function getAvailableTiles(tiles: IGrid) {
@@ -60,6 +80,8 @@ export function insertRandomTile(tiles: IGrid, base = 2) {
     tiles[row][col] = {
       id: getNewId(),
       value: Math.random() >= 0.9 ? Math.pow(base, 2) : base,
+      x: col,
+      y: row,
     };
   }
 }

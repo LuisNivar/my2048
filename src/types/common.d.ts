@@ -4,7 +4,7 @@ type Vector = {
   y: number;
 };
 
-type ITile = {
+type ITile = Vector & {
   id: number;
   value: number;
 };

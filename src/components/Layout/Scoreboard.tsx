@@ -1,8 +1,8 @@
 import cn from "classnames";
 import Container from "../Container";
-import styles from "./index.module.css";
+import styles from "./Scoreboard.module.css";
 
-type ScoreType = {
+type ScoreboardProps = {
   className?: string;
   score: number;
   bestScore: number;
@@ -12,7 +12,7 @@ function padZero(num: number, length: number) {
   return String(num).padStart(length, "0");
 }
 
-function ScoreBoard({ score, bestScore, className }: ScoreType) {
+function Scoreboard({ score, bestScore, className }: ScoreboardProps) {
   return (
     <div className={cn(styles.scoreBoard, className)}>
       <Container className={styles.container}>
@@ -28,4 +28,4 @@ function ScoreBoard({ score, bestScore, className }: ScoreType) {
   );
 }
 
-export default ScoreBoard;
+export default Scoreboard;

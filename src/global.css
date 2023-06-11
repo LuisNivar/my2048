@@ -19,6 +19,7 @@
 
   /* Fonts */
   font-family: "Blinker", sans-serif;
+  font-size: 0.875rem;
   color: var(--primary);
 
   /* Spacing */
@@ -42,6 +43,12 @@ h6 {
 
 body {
   margin: 0;
+}
+
+@media screen and (min-width: 375px) {
+  :root {
+    font-size: 1rem;
+  }
 }
 
 @media screen and (min-width: 1280px) {

@@ -20,7 +20,7 @@ export type Action =
     };
 //#endregion
 
-export function GameReducer(state: GameState, action: Action): GameState {
+export function gameReducer(state: GameState, action: Action): GameState {
   switch (action.type) {
     case "updated_tiles": {
       const currentScore = state.score + action.score;

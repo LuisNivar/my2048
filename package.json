@@ -1,8 +1,10 @@
 {
   "name": "my2048",
   "version": "0.1.0",
+  "homepage": "https://brianuribe6.github.io/my2048",
   "private": true,
   "dependencies": {
+    "@react-spring/web": "^9.7.1",
     "classnames": "^2.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
