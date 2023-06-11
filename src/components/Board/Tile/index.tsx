@@ -63,10 +63,13 @@ function useTileAnimation(x: number, y: number, value: number) {
   return useSpring({
     from: {
       scale: 0,
-      background: "white",
+      opacity: 0,
+      rotate: -90,
     },
     to: {
       scale: 1,
+      opacity: 1,
+      rotate: 0,
       x,
       y,
       background: getCSSColor(value),
