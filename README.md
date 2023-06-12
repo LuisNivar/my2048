@@ -14,7 +14,7 @@ Elegant 2048 is a clone of the popular 2048 game built using React. It is a sing
 
 ## Play the Game
 
-You can play Elegant 2048 online at [Elegant 2048](https://brianuribe6.github.io/my2048/). 
+You can play Elegant 2048 online at [Elegant 2048](https://luisnivar.github.io/my2048/). 
 
 ## Built With
 
